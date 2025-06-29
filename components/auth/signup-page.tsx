@@ -917,7 +917,30 @@ export function SignUpPage() {
         </motion.div>
       </div>
       {showWalletConnect && (
-        <WalletConnect onConnect={handleWalletConnect} onCancel={() => setShowWalletConnect(false)} />
+        <WalletConnect 
+          onConnect={handleWalletConnect} 
+          onSuccess={(address, userType, formData) => {
+            console.log("WalletConnect onSuccess called with:", { address, userType, formData });
+            // Set wallet info
+            setWalletInfo({ wallet: 'metamask', address });
+            // Set user type
+            setUserType(userType === 'client' ? 'client' : 'freelancer');
+            // Update form data
+            setFormData(prev => ({
+              ...prev,
+              firstName: formData.name.split(' ')[0] || '',
+              lastName: formData.name.split(' ').slice(1).join(' ') || '',
+              email: formData.email || '',
+              company: userType === 'client' ? formData.company : '',
+              skills: userType === 'freelancer' ? [formData.skills] : [],
+              experienceLevel: userType === 'freelancer' ? formData.experience : '',
+            }));
+            // Hide wallet connect and show details form
+            setShowWalletConnect(false);
+            setShowDetailsForm(true);
+          }}
+          onCancel={() => setShowWalletConnect(false)} 
+        />
       )}
     </div>
   )

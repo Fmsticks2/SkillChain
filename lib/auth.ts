@@ -71,6 +71,11 @@ export const useAuth = create<AuthState>()(
     }),
     {
       name: "auth-storage",
+      storage: {
+        getItem: () => null, // Always return null to prevent rehydration
+        setItem: () => {}, // No-op
+        removeItem: () => {}, // No-op
+      },
       onRehydrateStorage: () => (state) => {
         if (state) {
           state.isLoading = false

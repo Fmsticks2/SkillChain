@@ -66,13 +66,18 @@ export function WalletConnect({ onSuccess, onConnect, onCancel }: WalletConnectP
     setError(null)
 
     try {
+      console.log("Attempting to connect wallet...")
       const address = await connectWallet()
+      console.log("Wallet connection result:", address)
       // Simulate a delay for better UX
       await new Promise((resolve) => setTimeout(resolve, 500))
       
       // Call the onConnect callback if provided
       if (onConnect && address) {
+        console.log("Calling onConnect with address:", address)
         onConnect('metamask', address)
+      } else {
+        console.log("No onConnect callback or no address returned")
       }
     } catch (error: any) {
       console.error("Failed to connect wallet:", error)
@@ -89,24 +94,35 @@ export function WalletConnect({ onSuccess, onConnect, onCancel }: WalletConnectP
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    console.log("Form submission started")
+    console.log("Current account:", currentAccount)
+    console.log("User type:", userType)
+    console.log("Form data:", formData)
     
-    if (!currentAccount) return
+    if (!currentAccount) {
+      console.error("No wallet connected")
+      return
+    }
     
     if (!userType) {
+      console.error("No user type selected")
       alert("Please select whether you're a client or a freelancer")
       return
     }
 
     // Call the onSuccess callback with the wallet address, user type, and form data
     if (onSuccess) {
+      console.log("Calling onSuccess with:", { currentAccount, userType, formData })
       onSuccess(currentAccount, userType, formData)
+    } else {
+      console.error("No onSuccess callback provided")
     }
   }
 
   // Render wallet connection step
   if (currentStep === "connect") {
     return (
-      <Card className="w-full max-w-md mx-auto">
+      <Card className="w-full max-w-md mx-auto fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
         <CardHeader>
           <CardTitle>Connect Your Wallet</CardTitle>
           <CardDescription>
@@ -180,7 +196,7 @@ export function WalletConnect({ onSuccess, onConnect, onCancel }: WalletConnectP
     );
   } else {
     return (
-      <Card className="w-full max-w-md mx-auto">
+      <Card className="w-full max-w-md mx-auto fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
         <CardHeader>
           <CardTitle>Complete Your Profile</CardTitle>
           <CardDescription>

@@ -75,11 +75,14 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/auth/signin",
-    signUp: "/auth/signup",
+    // signUp is not a valid property in NextAuth PagesOptions
+    // Using newUser instead which is the correct property
+    newUser: "/auth/signup",
     error: "/auth/error",
   },
   session: {
     strategy: "jwt",
+    maxAge: 0, // Session expires immediately when browser is closed
   },
   secret: process.env.NEXTAUTH_SECRET || "DEVELOPMENT_SECRET_DO_NOT_USE_IN_PRODUCTION",
 }

@@ -141,96 +141,96 @@ export function LandingPage() {
     <div className="min-h-screen bg-slate-950 text-white">
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
                 <Zap className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold">SkillChain</span>
+              <span className="text-lg sm:text-xl font-bold">SkillChain</span>
             </Link>
 
-            <div className="hidden md:flex items-center space-x-8">
-              <Link href="/projects" className="text-slate-300 hover:text-white transition-colors">
+            <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
+              <Link href="/projects" className="text-slate-300 hover:text-white transition-colors text-sm lg:text-base">
                 Find Projects
               </Link>
-              <Link href="/talent" className="text-slate-300 hover:text-white transition-colors">
+              <Link href="/talent" className="text-slate-300 hover:text-white transition-colors text-sm lg:text-base">
                 Browse Talent
               </Link>
-              <Link href="/for-freelancers" className="text-slate-300 hover:text-white transition-colors">
+              <Link href="/for-freelancers" className="text-slate-300 hover:text-white transition-colors text-sm lg:text-base">
                 For Freelancers
               </Link>
-              <Link href="/for-clients" className="text-slate-300 hover:text-white transition-colors">
+              <Link href="/for-clients" className="text-slate-300 hover:text-white transition-colors text-sm lg:text-base">
                 For Clients
               </Link>
-              <Link href="/pricing" className="text-slate-300 hover:text-white transition-colors">
+              <Link href="/pricing" className="text-slate-300 hover:text-white transition-colors text-sm lg:text-base">
                 Pricing
               </Link>
             </div>
 
-            <div className="hidden md:flex items-center space-x-4">
-              <Button onClick={handleSignIn} variant="ghost" className="text-slate-300 hover:text-white">
+            <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
+              <Button onClick={handleSignIn} variant="ghost" className="text-slate-300 hover:text-white text-sm lg:text-base px-2 lg:px-4">
                 Sign In
               </Button>
               <Button
                 onClick={handleGetStarted}
-                className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-sm lg:text-base px-2 lg:px-4"
               >
                 Get Started
               </Button>
             </div>
 
-            <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleMobileMenu}>
+            <Button variant="ghost" size="icon" className="md:hidden flex-shrink-0" onClick={toggleMobileMenu}>
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
           </div>
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden mt-4 pb-4 border-t border-slate-800">
+            <div className="md:hidden mt-4 pb-4 border-t border-slate-800 overflow-y-auto max-h-[calc(100vh-80px)]">
               <div className="flex flex-col space-y-4 pt-4">
                 <Link
                   href="/projects"
-                  className="text-slate-300 hover:text-white transition-colors"
+                  className="text-slate-300 hover:text-white transition-colors px-2 py-1"
                   onClick={closeMobileMenu}
                 >
                   Find Projects
                 </Link>
                 <Link
                   href="/talent"
-                  className="text-slate-300 hover:text-white transition-colors"
+                  className="text-slate-300 hover:text-white transition-colors px-2 py-1"
                   onClick={closeMobileMenu}
                 >
                   Browse Talent
                 </Link>
                 <Link
                   href="/for-freelancers"
-                  className="text-slate-300 hover:text-white transition-colors"
+                  className="text-slate-300 hover:text-white transition-colors px-2 py-1"
                   onClick={closeMobileMenu}
                 >
                   For Freelancers
                 </Link>
                 <Link
                   href="/for-clients"
-                  className="text-slate-300 hover:text-white transition-colors"
+                  className="text-slate-300 hover:text-white transition-colors px-2 py-1"
                   onClick={closeMobileMenu}
                 >
                   For Clients
                 </Link>
                 <Link
                   href="/pricing"
-                  className="text-slate-300 hover:text-white transition-colors"
+                  className="text-slate-300 hover:text-white transition-colors px-2 py-1"
                   onClick={closeMobileMenu}
                 >
                   Pricing
                 </Link>
                 <div className="flex flex-col space-y-2 pt-4">
-                  <Button onClick={handleSignIn} variant="ghost" className="text-slate-300 hover:text-white">
+                  <Button onClick={handleSignIn} variant="ghost" className="text-slate-300 hover:text-white w-full">
                     Sign In
                   </Button>
                   <Button
                     onClick={handleGetStarted}
-                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 w-full"
                   >
                     Get Started
                   </Button>
