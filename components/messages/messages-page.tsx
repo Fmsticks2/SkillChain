@@ -280,7 +280,7 @@ export function MessagesPage() {
                     </Button>
                   </div>
                 </div>
-                <ConnectionStatus />
+                <ConnectionStatus status="connected" />
               </div>
 
               {/* Messages */}
@@ -305,7 +305,7 @@ export function MessagesPage() {
                     </div>
                   </motion.div>
                 ))}
-                {isTyping && <TypingIndicator />}
+                {isTyping && <TypingIndicator userNames={[selectedConv?.name || "Someone"]} />}
               </div>
 
               {/* Message Input */}

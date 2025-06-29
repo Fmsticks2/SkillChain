@@ -16,7 +16,7 @@ This guide explains how to deploy the Web3 Skill Platform frontend to Vercel, in
 1. Log in to your Vercel account
 2. Click on "Add New..." → "Project"
 3. Import your GitHub repository
-4. Select the Web3 Skill Platform repository
+4. Select the SkillChain repository
 
 ### 2. Configure Environment Variables
 
