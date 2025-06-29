@@ -27,6 +27,7 @@ import {
   MoreHorizontal,
   ArrowUpRight,
   Eye,
+  LogOut,
 } from "lucide-react"
 import {
   Sidebar,
@@ -39,6 +40,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useAuth } from "@/lib/auth"
 
 const activeProjects = [
   {
@@ -122,6 +125,14 @@ const topTalent = [
 ]
 
 function AppSidebar() {
+  const { user, logout } = useAuth()
+  const router = useRouter()
+
+  const handleLogout = () => {
+    logout()
+    router.push('/')
+  }
+
   return (
     <Sidebar className="border-r border-slate-800">
       <SidebarHeader className="p-6">
@@ -183,6 +194,12 @@ function AppSidebar() {
                 Settings
               </SidebarMenuButton>
             </Link>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={handleLogout}>
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>

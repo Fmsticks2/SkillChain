@@ -24,6 +24,7 @@ import {
   TrendingUp,
   Clock,
   MoreHorizontal,
+  LogOut,
 } from "lucide-react"
 import {
   Sidebar,
@@ -36,8 +37,80 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { useAuth } from "@/lib/auth"
+import { useRouter } from "next/navigation"
 
-const pendingUsers = [
+// Define TypeScript interfaces for different user types
+interface BaseUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  joinDate: string;
+  avatar: string;
+}
+
+interface PendingFreelancer extends BaseUser {
+  skills: string[];
+  documents: number;
+}
+
+interface PendingClient extends BaseUser {
+  company: string;
+  documents: number;
+}
+
+interface VerifiedFreelancer extends BaseUser {
+  lastActive: string;
+  projects: number;
+  earnings: number;
+}
+
+interface VerifiedClient extends BaseUser {
+  lastActive: string;
+  projects: number;
+  spent: number;
+}
+
+interface ReportedUser extends BaseUser {
+  reports: number;
+  reason: string;
+  reportDate: string;
+}
+
+type User = PendingFreelancer | PendingClient | VerifiedFreelancer | VerifiedClient | ReportedUser;
+
+// Type guard functions
+function isVerifiedFreelancer(user: User): user is VerifiedFreelancer {
+  return user.role === 'freelancer' && user.status === 'verified';
+}
+
+function isVerifiedClient(user: User): user is VerifiedClient {
+  return user.role === 'client' && user.status === 'verified';
+}
+
+function isPendingFreelancer(user: User): user is PendingFreelancer {
+  return user.role === 'freelancer' && user.status === 'pending';
+}
+
+function isPendingClient(user: User): user is PendingClient {
+  return user.role === 'client' && user.status === 'pending';
+}
+
+function isReportedUser(user: User): user is ReportedUser {
+  return 'reports' in user && 'reason' in user;
+}
+
+// Combined type guards for skills and company access
+function hasSkills(user: User): user is PendingFreelancer | VerifiedFreelancer {
+  return user.role === 'freelancer';
+}
+
+function hasCompany(user: User): user is PendingClient | VerifiedClient {
+  return user.role === 'client';
+}
+
+const pendingUsers: (PendingFreelancer | PendingClient)[] = [
   {
     id: "4",
     name: "Alex Thompson",
@@ -73,7 +146,7 @@ const pendingUsers = [
   },
 ]
 
-const allUsers = [
+const allUsers: User[] = [
   {
     id: "1",
     name: "John Doe",
@@ -101,7 +174,7 @@ const allUsers = [
   ...pendingUsers,
 ]
 
-const reportedUsers = [
+const reportedUsers: ReportedUser[] = [
   {
     id: "7",
     name: "Suspicious User",
@@ -110,6 +183,7 @@ const reportedUsers = [
     reports: 3,
     reason: "Fake portfolio, missed deadlines",
     reportDate: "2024-01-19",
+    joinDate: "2024-01-15",
     status: "under_review",
     avatar: "/placeholder.svg?height=40&width=40",
   },
@@ -117,6 +191,12 @@ const reportedUsers = [
 
 function AdminSidebar() {
   const { user, logout } = useAuth()
+  const router = useRouter()
+  
+  const handleLogout = () => {
+    logout()
+    router.push('/')
+  }
 
   return (
     <Sidebar className="border-r border-slate-800">
@@ -165,9 +245,9 @@ function AdminSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={logout}>
-              <XCircle className="w-4 h-4" />
-              Logout
+            <SidebarMenuButton onClick={handleLogout}>
+              <LogOut className="w-4 h-4" />
+              Sign Out
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -430,11 +510,11 @@ export function AdminDashboard() {
                             <span className="text-slate-400">Documents:</span>
                             <span className="ml-2">{user.documents} uploaded</span>
                           </div>
-                          {user.skills && (
+                          {hasSkills(user) && isPendingFreelancer(user) && (
                             <div>
                               <span className="text-slate-400">Skills:</span>
                               <div className="flex flex-wrap gap-1 mt-1">
-                                {user.skills.map((skill) => (
+                                {user.skills.map((skill: string) => (
                                   <Badge key={skill} variant="secondary" className="text-xs">
                                     {skill}
                                   </Badge>
@@ -442,8 +522,33 @@ export function AdminDashboard() {
                               </div>
                             </div>
                           )}
-                          {user.company && (
+                          {hasCompany(user) && isPendingClient(user) && (
                             <div>
+                              <span className="text-slate-400">Company:</span>
+                              <span className="ml-2">{user.company}</span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="flex flex-col gap-1">
+                          <div className="text-sm">
+                            <span className="text-slate-400">Email:</span>
+                            <span className="ml-2">{user.email}</span>
+                          </div>
+                          {hasSkills(user) && (
+                            <div className="text-sm">
+                              <span className="text-slate-400">Skills:</span>
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                {user.skills.map((skill: string) => (
+                                  <Badge key={skill} variant="secondary" className="text-xs">
+                                    {skill}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {hasCompany(user) && (
+                            <div className="text-sm">
                               <span className="text-slate-400">Company:</span>
                               <span className="ml-2">{user.company}</span>
                             </div>
@@ -512,9 +617,11 @@ export function AdminDashboard() {
                             <div className="text-right text-sm">
                               <p className="text-slate-400">{user.role === "freelancer" ? "Projects:" : "Spent:"}</p>
                               <p className="font-medium">
-                                {user.role === "freelancer"
-                                  ? `${user.projects || 0} projects`
-                                  : `$${(user.spent || 0).toLocaleString()}`}
+                                {isVerifiedFreelancer(user)
+                                  ? `${user.projects} projects`
+                                  : isVerifiedClient(user)
+                                    ? `$${user.spent.toLocaleString()}`
+                                    : "0"}
                               </p>
                             </div>
                             <div className="flex items-center space-x-2">

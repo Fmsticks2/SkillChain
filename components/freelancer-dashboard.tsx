@@ -26,6 +26,9 @@ import {
   ExternalLink,
   ArrowUpRight,
   Zap,
+  LogOut,
+  Briefcase,
+  BarChart3,
 } from "lucide-react"
 import {
   Sidebar,
@@ -38,6 +41,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useAuth } from "@/lib/auth"
 
 const skillsData = [
   { name: "React Development", level: 95, verified: true, projects: 24, earnings: 15420 },
@@ -101,6 +106,14 @@ const recommendedProjects = [
 ]
 
 function AppSidebar() {
+  const { user, logout } = useAuth()
+  const router = useRouter()
+
+  const handleLogout = () => {
+    logout()
+    router.push('/')
+  }
+
   return (
     <Sidebar className="border-r border-slate-800">
       <SidebarHeader className="p-6">
@@ -111,7 +124,7 @@ function AppSidebar() {
           </Avatar>
           <div>
             <h3 className="font-semibold text-white">John Doe</h3>
-            <p className="text-sm text-slate-400">Full Stack Developer</p>
+            <p className="text-sm text-slate-400">Blockchain Developer</p>
           </div>
         </div>
       </SidebarHeader>
@@ -126,7 +139,7 @@ function AppSidebar() {
           <SidebarMenuItem>
             <Link href="/projects">
               <SidebarMenuButton>
-                <Users className="w-4 h-4" />
+                <Briefcase className="w-4 h-4" />
                 Projects
               </SidebarMenuButton>
             </Link>
@@ -150,7 +163,7 @@ function AppSidebar() {
           <SidebarMenuItem>
             <Link href="/analytics">
               <SidebarMenuButton>
-                <TrendingUp className="w-4 h-4" />
+                <BarChart3 className="w-4 h-4" />
                 Analytics
               </SidebarMenuButton>
             </Link>
@@ -162,6 +175,12 @@ function AppSidebar() {
                 Settings
               </SidebarMenuButton>
             </Link>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={handleLogout}>
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
