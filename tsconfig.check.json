@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": [
+    "components/contract/ContractProvider.tsx",
+    "lib/contract-integration.ts",
+    "types/**/*.d.ts"
+  ]
+}
