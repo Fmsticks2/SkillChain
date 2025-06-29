@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -11,15 +12,20 @@ import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Bell, Wallet, Camera, Save, Trash2, Eye, EyeOff, Globe, Smartphone, Mail } from "lucide-react"
+import { useAuth } from "@/lib/auth"
 
 export function SettingsPage() {
   const [showPassword, setShowPassword] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleteConfirmText, setDeleteConfirmText] = useState('')
   const [notifications, setNotifications] = useState({
     email: true,
     push: true,
     sms: false,
     marketing: false,
   })
+  const router = useRouter()
+  const { user, logout } = useAuth()
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6">
@@ -388,16 +394,66 @@ export function SettingsPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <Card className="p-6 bg-red-900/10 border-red-500/20">
             <h3 className="text-xl font-semibold mb-4 text-red-400">Danger Zone</h3>
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium">Delete Account</h4>
-                <p className="text-slate-400 text-sm">Permanently delete your account and all associated data</p>
+            {!showDeleteConfirm ? (
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium">Delete Account</h4>
+                  <p className="text-slate-400 text-sm">Permanently delete your account and all associated data</p>
+                </div>
+                <Button 
+                  variant="destructive" 
+                  className="bg-red-600 hover:bg-red-700"
+                  onClick={() => setShowDeleteConfirm(true)}
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete Account
+                </Button>
               </div>
-              <Button variant="destructive" className="bg-red-600 hover:bg-red-700">
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete Account
-              </Button>
-            </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-medium mb-2">Are you sure you want to delete your account?</h4>
+                  <p className="text-slate-400 text-sm mb-4">
+                    This action cannot be undone. All your data, projects, and earnings will be permanently deleted.
+                    Type <span className="font-bold text-red-400">DELETE</span> to confirm.
+                  </p>
+                  <div className="space-y-2">
+                    <Input 
+                      value={deleteConfirmText}
+                      onChange={(e) => setDeleteConfirmText(e.target.value)}
+                      placeholder="Type DELETE to confirm"
+                      className="bg-slate-800 border-slate-700"
+                    />
+                  </div>
+                </div>
+                <div className="flex space-x-3">
+                  <Button 
+                    variant="destructive" 
+                    className="bg-red-600 hover:bg-red-700"
+                    disabled={deleteConfirmText !== 'DELETE'}
+                    onClick={() => {
+                      // Delete account logic here
+                      alert('Your account has been deleted');
+                      logout();
+                      router.push('/');
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Permanently Delete Account
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="border-slate-700 bg-transparent"
+                    onClick={() => {
+                      setShowDeleteConfirm(false);
+                      setDeleteConfirmText('');
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            )}
           </Card>
         </motion.div>
       </div>

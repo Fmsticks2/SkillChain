@@ -1,11 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useEthereum } from "@/hooks/use-ethereum"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import {
   Wallet,
   Copy,
@@ -21,10 +23,12 @@ import {
   CheckCircle,
   DollarSign,
   BarChart3,
+  LogOut,
+  Plus,
 } from "lucide-react"
 
-const walletData = {
-  address: "0x742d35Cc6634C0532925a3b8D4C9db4C4C4C4C4C",
+// Mock wallet data - in a real app, this would come from blockchain queries
+const mockWalletData = {
   balance: {
     eth: 2.45,
     usdc: 15420.5,
@@ -114,11 +118,36 @@ const escrowContracts = [
 ]
 
 export function WalletIntegration() {
-  const [isConnected, setIsConnected] = useState(true)
+  const { isMetaMaskInstalled, currentAccount, connect, error } = useEthereum()
   const [activeTab, setActiveTab] = useState("overview")
+  const [showConnectDialog, setShowConnectDialog] = useState(false)
+  const [showDisconnectDialog, setShowDisconnectDialog] = useState(false)
+  
+  // Determine if wallet is connected based on currentAccount
+  const isConnected = !!currentAccount
 
   const copyAddress = () => {
-    navigator.clipboard.writeText(walletData.address)
+    if (currentAccount) {
+      navigator.clipboard.writeText(currentAccount)
+    }
+  }
+  
+  const handleConnect = async () => {
+    try {
+      await connect()
+      setShowConnectDialog(false)
+    } catch (err) {
+      console.error("Failed to connect wallet:", err)
+    }
+  }
+  
+  const handleDisconnect = () => {
+    // MetaMask doesn't have a direct disconnect method
+    // We can simulate disconnection by clearing local state
+    window.localStorage.removeItem('walletconnect')
+    // Force page reload to clear connection state
+    window.location.reload()
+    setShowDisconnectDialog(false)
   }
 
   return (
@@ -137,12 +166,35 @@ export function WalletIntegration() {
                   <div className="w-3 h-3 bg-emerald-400 rounded-full"></div>
                   <span className="text-sm">Connected</span>
                   <Button variant="ghost" size="sm" onClick={copyAddress} className="text-slate-400 hover:text-white">
-                    {walletData.address.slice(0, 6)}...{walletData.address.slice(-4)}
+                    {currentAccount?.slice(0, 6)}...{currentAccount?.slice(-4)}
                     <Copy className="w-4 h-4 ml-2" />
                   </Button>
+                  <div className="flex space-x-2">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      onClick={() => setShowConnectDialog(true)} 
+                      className="text-slate-400 hover:text-white"
+                      title="Connect another wallet"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      onClick={() => setShowDisconnectDialog(true)} 
+                      className="text-slate-400 hover:text-white"
+                      title="Disconnect wallet"
+                    >
+                      <LogOut className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               ) : (
-                <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                <Button 
+                  className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                  onClick={() => setShowConnectDialog(true)}
+                >
                   <Wallet className="w-4 h-4 mr-2" />
                   Connect Wallet
                 </Button>
@@ -174,8 +226,8 @@ export function WalletIntegration() {
                       </div>
                       <TrendingUp className="w-5 h-5 text-emerald-400" />
                     </div>
-                    <p className="text-2xl font-bold">{walletData.balance.eth} ETH</p>
-                    <p className="text-slate-400 text-sm">≈ ${(walletData.balance.eth * 2340).toLocaleString()}</p>
+                    <p className="text-2xl font-bold">{mockWalletData.balance.eth} ETH</p>
+                          <p className="text-slate-400 text-sm">≈ ${(mockWalletData.balance.eth * 2340).toLocaleString()}</p>
                   </Card>
                 </motion.div>
 
@@ -190,7 +242,7 @@ export function WalletIntegration() {
                       </div>
                       <TrendingUp className="w-5 h-5 text-emerald-400" />
                     </div>
-                    <p className="text-2xl font-bold">${walletData.balance.usdc.toLocaleString()}</p>
+                    <p className="text-2xl font-bold">${mockWalletData.balance.usdc.toLocaleString()}</p>
                     <p className="text-slate-400 text-sm">Stable Coin</p>
                   </Card>
                 </motion.div>
@@ -206,7 +258,7 @@ export function WalletIntegration() {
                       </div>
                       <TrendingUp className="w-5 h-5 text-emerald-400" />
                     </div>
-                    <p className="text-2xl font-bold">{walletData.balance.skill.toLocaleString()} SKILL</p>
+                    <p className="text-2xl font-bold">{mockWalletData.balance.skill.toLocaleString()} SKILL</p>
                     <p className="text-slate-400 text-sm">Platform Token</p>
                   </Card>
                 </motion.div>
@@ -385,7 +437,7 @@ export function WalletIntegration() {
                         <div>
                           <p className="text-slate-400 text-sm">Staked Amount</p>
                           <p className="text-2xl font-bold text-purple-400">
-                            {walletData.staked.skill.toLocaleString()} SKILL
+                            {mockWalletData.staked.skill.toLocaleString()} SKILL
                           </p>
                         </div>
                         <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
@@ -396,7 +448,7 @@ export function WalletIntegration() {
                       <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
                         <div>
                           <p className="text-slate-400 text-sm">APY</p>
-                          <p className="text-2xl font-bold text-emerald-400">{walletData.staked.apy}%</p>
+                          <p className="text-2xl font-bold text-emerald-400">{mockWalletData.staked.apy}%</p>
                         </div>
                         <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
                           <TrendingUp className="w-6 h-6 text-white" />
@@ -406,7 +458,7 @@ export function WalletIntegration() {
                       <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
                         <div>
                           <p className="text-slate-400 text-sm">Pending Rewards</p>
-                          <p className="text-2xl font-bold text-amber-400">{walletData.staked.rewards} SKILL</p>
+                          <p className="text-2xl font-bold text-amber-400">{mockWalletData.staked.rewards} SKILL</p>
                         </div>
                         <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
                           <Coins className="w-6 h-6 text-white" />
@@ -486,7 +538,7 @@ export function WalletIntegration() {
               </p>
               <Button
                 className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
-                onClick={() => setIsConnected(true)}
+                onClick={() => setShowConnectDialog(true)}
               >
                 <Wallet className="w-4 h-4 mr-2" />
                 Connect Wallet
@@ -495,6 +547,69 @@ export function WalletIntegration() {
           </motion.div>
         )}
       </div>
+      
+      {/* Connect Wallet Dialog */}
+      <Dialog open={showConnectDialog} onOpenChange={setShowConnectDialog}>
+        <DialogContent className="bg-slate-900 border border-slate-800 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">Connect Wallet</DialogTitle>
+            <DialogDescription className="text-slate-400">
+              Connect your wallet to access your assets and manage your account.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            {!isMetaMaskInstalled && (
+              <div className="p-4 bg-amber-500/20 text-amber-400 rounded-lg">
+                <p>MetaMask is not installed. Please install MetaMask to connect your wallet.</p>
+              </div>
+            )}
+            
+            {error && (
+              <div className="p-4 bg-red-500/20 text-red-400 rounded-lg">
+                <p>{error}</p>
+              </div>
+            )}
+            
+            <Button 
+              className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+              onClick={handleConnect}
+              disabled={!isMetaMaskInstalled}
+            >
+              <Wallet className="w-4 h-4 mr-2" />
+              Connect with MetaMask
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Disconnect Wallet Dialog */}
+      <Dialog open={showDisconnectDialog} onOpenChange={setShowDisconnectDialog}>
+        <DialogContent className="bg-slate-900 border border-slate-800 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">Disconnect Wallet</DialogTitle>
+            <DialogDescription className="text-slate-400">
+              Are you sure you want to disconnect your wallet?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex space-x-3 justify-end pt-4">
+            <Button 
+              variant="outline" 
+              className="border-slate-700 bg-transparent"
+              onClick={() => setShowDisconnectDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive" 
+              className="bg-red-600 hover:bg-red-700"
+              onClick={handleDisconnect}
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Disconnect
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
