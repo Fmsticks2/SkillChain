@@ -237,14 +237,14 @@ Citrea network configuration is also defined in `lib/contract-integration.ts`:
 ```typescript
 const NETWORKS = {
   citreaTestnet: {
-    chainId: "0x849", // 2121 in decimal
+    chainId: "0x13FB", // 5115 in decimal
     chainName: "Citrea Testnet",
     nativeCurrency: {
       name: "Bitcoin",
       symbol: "BTC",
       decimals: 18
     },
-    rpcUrls: ["https://testnet-rpc.citrea.xyz"],
+    rpcUrls: ["https://rpc.testnet.citrea.xyz"],
     blockExplorerUrls: ["https://testnet-explorer.citrea.xyz"]
   },
   citreaMainnet: {

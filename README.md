@@ -1,30 +1,106 @@
-# Web3 skill matching platform
+# ⛓️ SkillChain
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+## 🌐 Overview
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/fmsticks2s-projects/v0-web3-skill-matching-platform)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/fdztFVLDS9j)
+SkillChain is a decentralized application built on the Citrea network that connects clients and freelancers in a trustless environment. The platform leverages blockchain technology to provide verified skill attestations, secure payment escrow, and a portable reputation system.
 
-## Overview
+### ✨ Key Features
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+- **🔐 Blockchain Verification**: Skills verified through cryptographic challenges and peer review
+- **💼 Smart Contract Escrow**: Automated payments and milestone releases through secure smart contracts
+- **🌍 Global Talent Pool**: Access to 25,000+ verified Web3 professionals worldwide
+- **🏆 Portable Reputation**: Build a reputation that follows you across platforms and projects
 
-## Deployment
+## 🏗️ Technical Architecture
 
-Your project is live at:
+The platform consists of two main components:
 
-**[https://vercel.com/fmsticks2s-projects/v0-web3-skill-matching-platform](https://vercel.com/fmsticks2s-projects/v0-web3-skill-matching-platform)**
+1. **📝 Smart Contracts**: Solidity contracts deployed on the Citrea network
+   - User profile management and verification
+   - Skill verification and attestation
+   - Escrow services for freelance projects
+   - Payment processing and token management
+   - Reputation system
 
-## Build your app
+2. **🖥️ Frontend Application**: Next.js web application deployed on Vercel
+   - React components for contract interaction
+   - Wallet integration
+   - User dashboard
+   - Project management interface
 
-Continue building your app on:
+## 🔄 Citrea Integration
 
-**[https://v0.dev/chat/projects/fdztFVLDS9j](https://v0.dev/chat/projects/fdztFVLDS9j)**
+The platform is built on Citrea, a ZK-rollup for Bitcoin that is fully EVM compatible. This provides:
 
-## How It Works
+- 💰 Low transaction fees
+- ⚡ High throughput
+- 🔒 Security backed by Bitcoin
+- 🔌 Full compatibility with Ethereum tooling
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+## 🛣️ Development Roadmap
+
+### 🚀 Phase 1: Core Platform (Current)
+
+- Smart contract deployment on Citrea testnet
+- Basic user registration and profile management
+- Project creation and escrow functionality
+- Skill verification system
+
+### 🔍 Phase 2: Enhanced Features (Upcoming)
+
+- Reputation token implementation
+- Dispute resolution mechanism
+- Advanced search and matching algorithms
+- Mobile application development
+
+### 🌱 Phase 3: Ecosystem Expansion
+
+- Cross-chain integration with other networks
+- DAO governance implementation
+- Decentralized skill certification partnerships
+- AI-powered talent matching
+
+## 🚦 Getting Started
+
+### 📋 Prerequisites
+
+- Node.js and npm/yarn
+- MetaMask or other Web3 wallet
+- Citrea testnet tokens for testing
+
+### 🔧 Installation
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/skillchain.git
+   cd skillchain
+   ```
+
+2. Install dependencies
+   ```bash
+   npm install
+   ```
+
+3. Configure environment variables
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
+
+4. Run the development server
+   ```bash
+   npm run dev
+   ```
+
+## 📚 Documentation
+
+Detailed documentation is available in the `docs` directory:
+
+- [Smart Contract Deployment Guide](./docs/smart-contract-deployment-guide.md)
+- [Contract Verification Guide](./docs/contract-verification-guide.md)
+- [Frontend Deployment Guide](./docs/frontend-deployment-guide.md)
+- [Contract Integration Guide](./docs/contract-integration-guide.md)
+
+## 📜 License
+
+MIT

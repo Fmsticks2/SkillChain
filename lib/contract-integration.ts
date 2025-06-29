@@ -32,14 +32,14 @@ const CONTRACT_ADDRESSES = {
 // Network configuration
 const NETWORKS = {
   testnet: {
-    chainId: '0x1234', // Replace with actual Citrea testnet chain ID
+    chainId: '0x13FB', // Citrea testnet chain ID (5115 in decimal)
     chainName: 'Citrea Testnet',
     nativeCurrency: {
       name: 'Bitcoin',
       symbol: 'BTC',
       decimals: 18,
     },
-    rpcUrls: ['https://testnet-rpc.citrea.xyz'], // Replace with actual Citrea testnet RPC URL
+    rpcUrls: ['https://rpc.testnet.citrea.xyz'], // Citrea testnet RPC URL
     blockExplorerUrls: ['https://testnet-explorer.citrea.xyz'], // Replace with actual Citrea testnet explorer URL
   },
   mainnet: {

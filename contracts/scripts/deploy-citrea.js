@@ -23,7 +23,7 @@ async function main() {
   // Deploy SkillVerification
   console.log("Deploying SkillVerification...");
   const SkillVerification = await ethers.getContractFactory("SkillVerification");
-  const skillVerification = await SkillVerification.deploy(deployer.address);
+  const skillVerification = await SkillVerification.deploy(deployer.address, await userRegistry.getAddress());
   await skillVerification.waitForDeployment();
   console.log(`SkillVerification deployed to: ${await skillVerification.getAddress()}`);
 

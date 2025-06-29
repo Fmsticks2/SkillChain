@@ -17,13 +17,13 @@ module.exports = {
       chainId: 31337,
     },
     'citrea-testnet': {
-      url: 'https://rpc-testnet.citrea.xyz',
-      chainId: 2121,
+      url: 'https://rpc.testnet.citrea.xyz',
+      chainId: 5115,
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       gasPrice: 'auto',
     },
     'citrea-mainnet': {
-      url: 'https://rpc.citrea.xyz', // This is a placeholder, update when mainnet is available
+      url: 'https://rpc.mainnet.citrea.xyz', // This is a placeholder, update when mainnet is available
       chainId: 2122, // This is a placeholder, update when mainnet is available
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       gasPrice: 'auto',
@@ -41,7 +41,7 @@ module.exports = {
     customChains: [
       {
         network: "citrea-testnet",
-        chainId: 2121,
+        chainId: 5115,
         urls: {
           apiURL: "https://explorer-api-testnet.citrea.xyz/api", // Placeholder, update when available
           browserURL: "https://explorer-testnet.citrea.xyz" // Placeholder, update when available
