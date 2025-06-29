@@ -128,9 +128,9 @@ export function SignUpPage() {
         if (session.user) {
           setFormData((prev) => ({
             ...prev,
-            firstName: session.user.name?.split(" ")[0] || "",
-            lastName: session.user.name?.split(" ").slice(1).join(" ") || "",
-            email: session.user.email || "",
+            firstName: session.user?.name?.split(" ")[0] || "",
+            lastName: session.user?.name?.split(" ").slice(1).join(" ") || "",
+            email: session.user?.email || "",
           }))
         }
         setShowDetailsForm(true)

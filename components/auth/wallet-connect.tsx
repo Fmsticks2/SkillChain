@@ -14,9 +14,11 @@ type UserType = "client" | "freelancer" | null
 
 interface WalletConnectProps {
   onSuccess?: (address: string, userType: UserType, userData: any) => void
+  onConnect?: (wallet: string, address: string) => void
+  onCancel?: () => void
 }
 
-export function WalletConnect({ onSuccess }: WalletConnectProps) {
+export function WalletConnect({ onSuccess, onConnect, onCancel }: WalletConnectProps) {
   const { 
     isMetaMaskInstalled, 
     currentAccount, 
@@ -64,9 +66,14 @@ export function WalletConnect({ onSuccess }: WalletConnectProps) {
     setError(null)
 
     try {
-      await connectWallet()
+      const address = await connectWallet()
       // Simulate a delay for better UX
       await new Promise((resolve) => setTimeout(resolve, 500))
+      
+      // Call the onConnect callback if provided
+      if (onConnect && address) {
+        onConnect('metamask', address)
+      }
     } catch (error: any) {
       console.error("Failed to connect wallet:", error)
       setError(error.message || "Failed to connect wallet")
@@ -156,6 +163,16 @@ export function WalletConnect({ onSuccess }: WalletConnectProps) {
                   )}
                 </Button>
               )}
+            </div>
+            
+            <div className="flex justify-center mt-4">
+              <Button 
+                variant="outline" 
+                onClick={onCancel} 
+                className="w-full"
+              >
+                Cancel
+              </Button>
             </div>
           </div>
         </CardContent>

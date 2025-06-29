@@ -4,10 +4,12 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
+import { signIn } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
 import {
   Wallet,
@@ -24,8 +26,8 @@ import {
   CheckCircle,
 } from "lucide-react"
 import Link from "next/link"
-import { WalletConnect } from "./wallet-connect"
-import { useAuth, mockUsers } from "@/lib/auth"
+import { WalletConnect } from "@/components/auth/wallet-connect"
+import { useAuth } from "@/lib/auth"
 
 export function SignInPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -50,18 +52,15 @@ export function SignInPage() {
     setError("")
 
     try {
-      // Simulate OAuth flow
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      // Mock successful OAuth login - use first freelancer for demo
-      const user = mockUsers.find((u) => u.role === "freelancer")
-      if (user) {
-        login(user)
-        router.push("/dashboard/freelancer")
-      }
-    } catch (err) {
-      setError("OAuth sign in failed. Please try again.")
-    } finally {
+      // Use NextAuth signIn with the specified provider
+      await signIn(provider, {
+        callbackUrl: window.location.origin + "/dashboard",
+      })
+      
+      // Note: No need to manually redirect as NextAuth will handle this
+      // The page will be redirected to the callbackUrl after successful authentication
+    } catch (err: any) {
+      setError(err.message || `${provider} sign in failed. Please try again.`)
       setIsLoading(false)
     }
   }
@@ -74,52 +73,56 @@ export function SignInPage() {
     setError("")
 
     try {
-      // Simulate email sign in
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      // Use NextAuth signIn with credentials
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+        callbackUrl: window.location.origin + "/dashboard",
+      })
 
-      // Find user by email
-      const user = mockUsers.find((u) => u.email === email)
-      if (user) {
-        login(user)
-        // Redirect based on role
-        switch (user.role) {
-          case "freelancer":
-            router.push("/dashboard/freelancer")
-            break
-          case "client":
-            router.push("/dashboard/client")
-            break
-          case "admin":
-            router.push("/admin")
-            break
-          default:
-            router.push("/")
-        }
-      } else {
-        setError("Invalid email or password")
+      if (result?.error) {
+        setError(result.error || "Invalid email or password")
+        return
       }
-    } catch (err) {
-      setError("Sign in failed. Please try again.")
+
+      // If successful, the user will be redirected by NextAuth
+      // We can also manually redirect based on user role if needed
+      // This would require fetching the user session
+    } catch (err: any) {
+      setError(err.message || "Sign in failed. Please try again.")
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleWalletConnect = (wallet: string, address: string) => {
+  const handleWalletConnect = async (wallet: string, address: string) => {
     if (!mounted) return
 
     setIsLoading(true)
+    setError("")
+    
+    try {
+      // Use NextAuth signIn with wallet credentials
+      const result = await signIn('credentials', {
+        redirect: false,
+        walletAddress: address,
+        walletProvider: wallet,
+        callbackUrl: window.location.origin + "/dashboard",
+      })
 
-    // Simulate wallet sign in
-    setTimeout(() => {
-      const user = mockUsers.find((u) => u.role === "freelancer")
-      if (user) {
-        login({ ...user, walletAddress: address })
-        router.push("/dashboard/freelancer")
+      if (result?.error) {
+        setError(result.error || "Wallet authentication failed")
+      } else {
+        // If successful, redirect to dashboard
+        router.push("/dashboard")
       }
+    } catch (err: any) {
+      setError(err.message || "Wallet connection failed. Please try again.")
+    } finally {
       setIsLoading(false)
       setShowWalletConnect(false)
-    }, 1000)
+    }
   }
 
   if (!mounted) {
@@ -157,16 +160,6 @@ export function SignInPage() {
                 <p className="text-red-400 text-sm">{error}</p>
               </div>
             )}
-
-            {/* Demo Accounts */}
-            <div className="mb-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-              <h3 className="font-medium mb-2">Demo Accounts:</h3>
-              <div className="space-y-1 text-sm text-slate-300">
-                <p>Freelancer: john@example.com</p>
-                <p>Client: sarah@techcorp.com</p>
-                <p>Admin: admin@skillchain.com</p>
-              </div>
-            </div>
 
             {/* OAuth Providers */}
             <div className="space-y-3 mb-6">
