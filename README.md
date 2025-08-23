@@ -72,7 +72,7 @@ The platform is built on Citrea, a ZK-rollup for Bitcoin that is fully EVM compa
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/yourusername/skillchain.git
+   git clone https://github.com/Fmsticks2/SkillChain
    cd skillchain
    ```
 
