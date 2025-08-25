@@ -4,13 +4,12 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { signIn } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import {
   Wallet,
   Mail,
@@ -24,44 +23,48 @@ import {
   Zap,
   Shield,
   CheckCircle,
+  Loader2,
+  AlertCircle,
 } from "lucide-react"
 import Link from "next/link"
-import { WalletConnect } from "@/components/auth/wallet-connect"
-import { useAuth } from "@/lib/auth"
+import { useAuthContext } from "@/components/auth/auth-provider"
 
 export function SignInPage() {
   const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [showWalletConnect, setShowWalletConnect] = useState(false)
-  const [error, setError] = useState("")
   const [mounted, setMounted] = useState(false)
 
-  const { login } = useAuth()
+  const {
+    loginWithSocial,
+    loginWithWallet,
+    isLoading,
+    error,
+    isWeb3AuthConnected,
+    isWalletConnected
+  } = useAuthContext()
+  
   const router = useRouter()
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  const handleOAuthSignIn = async (provider: string) => {
+  useEffect(() => {
+    // Redirect if already authenticated
+    if (isWeb3AuthConnected || isWalletConnected) {
+      router.push('/dashboard')
+    }
+  }, [isWeb3AuthConnected, isWalletConnected, router])
+
+  const handleSocialSignIn = async (provider: string) => {
     if (!mounted) return
 
-    setIsLoading(true)
-    setError("")
-
     try {
-      // Use NextAuth signIn with the specified provider
-      await signIn(provider, {
-        callbackUrl: window.location.origin + "/dashboard",
-      })
-      
-      // Note: No need to manually redirect as NextAuth will handle this
-      // The page will be redirected to the callbackUrl after successful authentication
+      await loginWithSocial(provider)
+      // Redirect will be handled by useEffect when auth state changes
     } catch (err: any) {
-      setError(err.message || `${provider} sign in failed. Please try again.`)
-      setIsLoading(false)
+      console.error('Social sign in failed:', err)
     }
   }
 
@@ -69,284 +72,202 @@ export function SignInPage() {
     e.preventDefault()
     if (!mounted) return
 
-    setIsLoading(true)
-    setError("")
-
-    try {
-      // Use NextAuth signIn with credentials
-      const result = await signIn('credentials', {
-        redirect: false,
-        email,
-        password,
-        callbackUrl: window.location.origin + "/dashboard",
-      })
-
-      if (result?.error) {
-        setError(result.error || "Invalid email or password")
-        return
-      }
-
-      // If successful, the user will be redirected by NextAuth
-      // We can also manually redirect based on user role if needed
-      // This would require fetching the user session
-    } catch (err: any) {
-      setError(err.message || "Sign in failed. Please try again.")
-    } finally {
-      setIsLoading(false)
-    }
+    // For now, we'll redirect to Web3Auth social login
+    // In a full implementation, you might want to integrate email/password with Web3Auth
+    await handleSocialSignIn('google')
   }
 
-  const handleWalletConnect = async (wallet: string, address: string) => {
+  const handleWalletSignIn = async () => {
     if (!mounted) return
 
-    setIsLoading(true)
-    setError("")
-    
     try {
-      // Use NextAuth signIn with wallet credentials
-      const result = await signIn('credentials', {
-        redirect: false,
-        walletAddress: address,
-        walletProvider: wallet,
-        callbackUrl: window.location.origin + "/dashboard",
-      })
-
-      if (result?.error) {
-        setError(result.error || "Wallet authentication failed")
-      } else {
-        // If successful, redirect to dashboard
-        router.push("/dashboard")
-      }
+      await loginWithWallet()
+      // Redirect will be handled by useEffect when auth state changes
     } catch (err: any) {
-      setError(err.message || "Wallet connection failed. Please try again.")
-    } finally {
-      setIsLoading(false)
-      setShowWalletConnect(false)
+      console.error('Wallet sign in failed:', err)
     }
   }
 
   if (!mounted) {
-    return null
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-purple-400" />
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex">
-      {/* Left Side - Form */}
-      <div className="flex-1 flex items-center justify-center p-6">
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="w-full max-w-md">
-          <div className="mb-8">
-            <Link
-              href="/"
-              className="inline-flex items-center space-x-2 text-slate-400 hover:text-white transition-colors mb-6"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back to home</span>
-            </Link>
-
-            <div className="flex items-center space-x-2 mb-6">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
-                <Zap className="w-5 h-5 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 items-center">
+        {/* Left side - Branding */}
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="hidden lg:block space-y-8"
+        >
+          <div className="space-y-6">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                <Zap className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold">SkillChain</span>
+              <h1 className="text-3xl font-bold text-white">SkillChain</h1>
+            </div>
+            
+            <div className="space-y-4">
+              <h2 className="text-4xl font-bold text-white leading-tight">
+                Welcome back to the future of
+                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> freelancing</span>
+              </h2>
+              <p className="text-xl text-slate-300 leading-relaxed">
+                Connect with verified professionals using Web3Auth and secure wallet connections.
+              </p>
             </div>
 
-            <h1 className="text-3xl font-bold mb-2">Welcome back</h1>
-            <p className="text-slate-400">Sign in to your account to continue building your reputation</p>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                  <Shield className="w-4 h-4 text-green-400" />
+                </div>
+                <span className="text-slate-300">Web3Auth social login integration</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="w-4 h-4 text-blue-400" />
+                </div>
+                <span className="text-slate-300">Secure wallet connections with Reown</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                  <Zap className="w-4 h-4 text-purple-400" />
+                </div>
+                <span className="text-slate-300">Seamless blockchain authentication</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Right side - Sign in form */}
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="w-full max-w-md mx-auto lg:mx-0"
+        >
+          <div className="lg:hidden mb-8 text-center">
+            <div className="flex items-center justify-center space-x-3 mb-4">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                <Zap className="w-5 h-5 text-white" />
+              </div>
+              <h1 className="text-2xl font-bold text-white">SkillChain</h1>
+            </div>
           </div>
 
-          <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
+          <Card className="p-8 bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl">
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-white mb-2">Welcome back</h2>
+              <p className="text-slate-400">Choose your preferred sign-in method</p>
+            </div>
+
             {error && (
-              <div className="mb-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg">
-                <p className="text-red-400 text-sm">{error}</p>
-              </div>
+              <Alert className="mb-6 bg-red-500/10 border-red-500/20 text-red-400">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
             )}
 
-            {/* OAuth Providers */}
-            <div className="space-y-3 mb-6">
+            {/* Social Login Options */}
+            <div className="space-y-4 mb-6">
               <Button
-                onClick={() => handleOAuthSignIn("google")}
+                onClick={() => handleSocialSignIn("google")}
                 disabled={isLoading}
-                className="w-full bg-white hover:bg-gray-100 text-gray-900 border-0 h-12"
+                className="w-full h-12 bg-white hover:bg-gray-100 text-gray-900 font-medium transition-all duration-200 hover:scale-[1.02]"
               >
-                <Chrome className="w-5 h-5 mr-3" />
-                Continue with Google
+                {isLoading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>
+                    <Chrome className="w-5 h-5 mr-3" />
+                    Continue with Google
+                  </>
+                )}
               </Button>
 
               <Button
-                onClick={() => handleOAuthSignIn("github")}
+                onClick={() => handleSocialSignIn("github")}
                 disabled={isLoading}
-                className="w-full bg-gray-900 hover:bg-gray-800 text-white border border-gray-700 h-12"
+                className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white font-medium border border-gray-700 transition-all duration-200 hover:scale-[1.02]"
               >
-                <Github className="w-5 h-5 mr-3" />
-                Continue with GitHub
+                {isLoading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>
+                    <Github className="w-5 h-5 mr-3" />
+                    Continue with GitHub
+                  </>
+                )}
               </Button>
 
               <Button
-                onClick={() => handleOAuthSignIn("linkedin")}
+                onClick={() => handleSocialSignIn("linkedin")}
                 disabled={isLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white border-0 h-12"
+                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all duration-200 hover:scale-[1.02]"
               >
-                <Linkedin className="w-5 h-5 mr-3" />
-                Continue with LinkedIn
-              </Button>
-
-              <Button
-                onClick={() => setShowWalletConnect(true)}
-                disabled={isLoading}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 h-12"
-              >
-                <Wallet className="w-5 h-5 mr-3" />
-                Connect Wallet
+                {isLoading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>
+                    <Linkedin className="w-5 h-5 mr-3" />
+                    Continue with LinkedIn
+                  </>
+                )}
               </Button>
             </div>
 
             <div className="relative mb-6">
-              <Separator className="bg-slate-700" />
+              <Separator className="bg-white/10" />
               <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 px-3 text-sm text-slate-400">
-                or continue with email
+                or
               </span>
             </div>
 
-            {/* Email Form */}
-            <form onSubmit={handleEmailSignIn} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 bg-slate-800 border-slate-700 focus:border-blue-500"
-                    required
-                  />
-                </div>
-              </div>
+            {/* Wallet Connection */}
+            <Button
+              onClick={handleWalletSignIn}
+              disabled={isLoading}
+              className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium transition-all duration-200 hover:scale-[1.02]"
+            >
+              {isLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  <Wallet className="w-5 h-5 mr-3" />
+                  Connect Wallet
+                </>
+              )}
+            </Button>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 bg-slate-800 border-slate-700 focus:border-blue-500"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white"
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <label className="flex items-center space-x-2 text-sm">
-                  <input type="checkbox" className="rounded border-slate-700 bg-slate-800" />
-                  <span className="text-slate-400">Remember me</span>
-                </label>
-                <Link href="/auth/forgot-password" className="text-sm text-blue-400 hover:text-blue-300">
-                  Forgot password?
+            <div className="mt-8 text-center">
+              <p className="text-sm text-slate-400">
+                Don't have an account?{" "}
+                <Link href="/auth/signup" className="text-purple-400 hover:text-purple-300 font-medium">
+                  Sign up
                 </Link>
-              </div>
+              </p>
+            </div>
 
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 h-12"
+            <div className="mt-6 text-center">
+              <Link
+                href="/"
+                className="inline-flex items-center space-x-2 text-slate-400 hover:text-white transition-colors text-sm"
               >
-                {isLoading ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  "Sign In"
-                )}
-              </Button>
-            </form>
-
-            <p className="text-center text-sm text-slate-400 mt-6">
-              Don't have an account?{" "}
-              <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300">
-                Sign up
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back to home</span>
               </Link>
-            </p>
+            </div>
           </Card>
         </motion.div>
       </div>
-
-      {/* Right Side - Benefits */}
-      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-900/20 to-purple-900/20 items-center justify-center p-12">
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="max-w-md"
-        >
-          <h2 className="text-3xl font-bold mb-6">
-            Join the Future of{" "}
-            <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              Decentralized Work
-            </span>
-          </h2>
-
-          <div className="space-y-6">
-            <div className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Shield className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">Cryptographic Verification</h3>
-                <p className="text-slate-400 text-sm">
-                  Your skills are verified through blockchain-based challenges and peer review
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Wallet className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">Secure Payments</h3>
-                <p className="text-slate-400 text-sm">Smart contract escrow ensures you get paid for your work</p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                <CheckCircle className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">Portable Reputation</h3>
-                <p className="text-slate-400 text-sm">
-                  Build a reputation that follows you across platforms and projects
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
-            <div className="flex items-center space-x-2 mb-2">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
-              <span className="text-sm font-medium">50,000+ verified professionals</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-              <span className="text-sm font-medium">$50M+ in total value locked</span>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-      {showWalletConnect && (
-        <WalletConnect onConnect={handleWalletConnect} onCancel={() => setShowWalletConnect(false)} />
-      )}
     </div>
   )
 }
