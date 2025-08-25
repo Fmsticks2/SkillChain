@@ -55,11 +55,16 @@ export const disconnectWallet = async () => {
   }
 }
 
+// Note: This function should be replaced with useAppKitAccount hook in components
+// This is kept for backward compatibility but will return default values
 export const getWalletInfo = () => {
   return {
-    isConnected: reownModal.getIsConnected(),
-    address: reownModal.getAddress(),
-    chainId: reownModal.getChainId(),
-    provider: reownModal.getWalletProvider()
+    isConnected: false,
+    address: undefined,
+    chainId: undefined,
+    provider: undefined
   }
 }
+
+// Export the modal for hook usage
+export { reownModal as appKit }

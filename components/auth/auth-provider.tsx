@@ -2,7 +2,8 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { web3AuthService } from '@/lib/web3auth-config'
-import { reownModal, getWalletInfo } from '@/lib/reown-config'
+import { reownModal } from '@/lib/reown-config'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import { IProvider } from '@web3auth/base'
 
 interface AuthContextType {
@@ -37,12 +38,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [web3AuthProvider, setWeb3AuthProvider] = useState<IProvider | null>(null)
   const [web3AuthUserInfo, setWeb3AuthUserInfo] = useState(null)
   
-  const [isWalletConnected, setIsWalletConnected] = useState(false)
-  const [walletAddress, setWalletAddress] = useState<string | null>(null)
-  const [walletChainId, setWalletChainId] = useState<number | null>(null)
-  
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  
+  // Use AppKit hooks for wallet connection state
+  const { address, isConnected: isWalletConnected } = useAppKitAccount()
+  const { chainId } = useAppKitNetwork()
+  
+  // Convert to expected types
+  const walletAddress = address ?? null
+  const walletChainId = chainId ? Number(chainId) : null
 
   useEffect(() => {
     initializeAuth()
@@ -64,13 +69,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setWeb3AuthUserInfo(userInfo)
       }
       
-      // Check wallet connection status
-      const walletInfo = getWalletInfo()
-      if (walletInfo.isConnected) {
-        setIsWalletConnected(true)
-        setWalletAddress(walletInfo.address ?? null)
-        setWalletChainId(typeof walletInfo.chainId === 'number' ? walletInfo.chainId : null)
-      }
+      // Wallet connection status will be handled by useAppKitAccount hook
+      // This will be updated in the component body
       
     } catch (err) {
       console.error('Auth initialization failed:', err)
@@ -106,13 +106,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
       await reownModal.open()
       
-      // Wait for connection and update state
-      const walletInfo = getWalletInfo()
-      if (walletInfo.isConnected) {
-        setIsWalletConnected(true)
-        setWalletAddress(walletInfo.address ?? null)
-        setWalletChainId(typeof walletInfo.chainId === 'number' ? walletInfo.chainId : null)
-      }
+      // Connection state will be updated automatically by useAppKitAccount hook
       
     } catch (err) {
       console.error('Wallet connection failed:', err)
@@ -137,9 +131,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Disconnect wallet if connected
       if (isWalletConnected) {
         await reownModal.disconnect()
-        setIsWalletConnected(false)
-        setWalletAddress(null)
-        setWalletChainId(null)
       }
       
     } catch (err) {
