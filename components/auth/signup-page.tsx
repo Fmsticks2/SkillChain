@@ -188,14 +188,14 @@ export function SignUpPage() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-400" />
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
       <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 items-center">
         {/* Left side - Branding */}
         <motion.div
@@ -206,7 +206,7 @@ export function SignUpPage() {
         >
           <div className="space-y-6">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
                 <Zap className="w-6 h-6 text-white" />
               </div>
               <h1 className="text-3xl font-bold text-white">SkillChain</h1>
@@ -215,7 +215,7 @@ export function SignUpPage() {
             <div className="space-y-4">
               <h2 className="text-4xl font-bold text-white leading-tight">
                 Join the future of
-                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> decentralized work</span>
+                <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"> decentralized work</span>
               </h2>
               <p className="text-xl text-slate-300 leading-relaxed">
                 Create your account using Web3Auth and connect your wallet with Reown for secure blockchain authentication.
@@ -236,8 +236,8 @@ export function SignUpPage() {
                 <span className="text-slate-300">Reown wallet integration</span>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-purple-400" />
+                <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                  <Zap className="w-4 h-4 text-blue-400" />
                 </div>
                 <span className="text-slate-300">Blockchain-verified reputation</span>
               </div>
@@ -254,14 +254,14 @@ export function SignUpPage() {
         >
           <div className="lg:hidden mb-8 text-center">
             <div className="flex items-center justify-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
                 <Zap className="w-5 h-5 text-white" />
               </div>
               <h1 className="text-2xl font-bold text-white">SkillChain</h1>
             </div>
           </div>
 
-          <Card className="p-8 bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl">
+          <Card className="p-8 bg-slate-900/50 backdrop-blur-sm border-slate-800 hover:border-slate-700 transition-all duration-300">
             {!showDetailsForm ? (
               <>
                 <div className="mb-8">
@@ -325,7 +325,7 @@ export function SignUpPage() {
                 </div>
 
                 <div className="relative mb-6">
-                  <Separator className="bg-white/10" />
+                  <Separator className="bg-slate-700" />
                   <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 px-3 text-sm text-slate-400">
                     or
                   </span>
@@ -335,7 +335,7 @@ export function SignUpPage() {
                 <Button
                   onClick={handleWalletSignUp}
                   disabled={isLoading}
-                  className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium transition-all duration-200 hover:scale-[1.02]"
+                  className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-medium transition-all duration-200 hover:scale-[1.02]"
                 >
                   {isLoading && signupMethod === "wallet" ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -350,7 +350,7 @@ export function SignUpPage() {
                 <div className="mt-8 text-center">
                   <p className="text-sm text-slate-400">
                     Already have an account?{" "}
-                    <Link href="/auth/signin" className="text-purple-400 hover:text-purple-300 font-medium">
+                    <Link href="/auth/signin" className="text-blue-400 hover:text-blue-300 font-medium">
                       Sign in
                     </Link>
                   </p>
@@ -399,7 +399,7 @@ export function SignUpPage() {
                       <div className="flex items-center space-x-3 p-4 border border-slate-700 rounded-lg hover:border-slate-600 transition-colors">
                         <RadioGroupItem value="client" id="client" />
                         <div className="flex items-center space-x-3 flex-1">
-                          <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
                             <Building className="w-5 h-5 text-white" />
                           </div>
                           <div>
@@ -511,7 +511,7 @@ export function SignUpPage() {
                 <div className="mt-8 text-center">
                   <p className="text-sm text-slate-400">
                     Already have an account?{" "}
-                    <Link href="/auth/signin" className="text-purple-400 hover:text-purple-300 font-medium">
+                    <Link href="/auth/signin" className="text-blue-400 hover:text-blue-300 font-medium">
                       Sign in
                     </Link>
                   </p>

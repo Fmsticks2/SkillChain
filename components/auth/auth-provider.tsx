@@ -57,16 +57,33 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setIsLoading(true)
       
-      // Initialize Web3Auth
-      await web3AuthService.init()
+      // Check if Web3Auth client ID is configured
+      const web3AuthClientId = process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID
+      const reownProjectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID
       
-      // Check if Web3Auth is already connected
-      if (web3AuthService.isConnected()) {
-        const userInfo = await web3AuthService.getUserInfo()
-        const provider = web3AuthService.getProvider()
-        setIsWeb3AuthConnected(true)
-        setWeb3AuthProvider(provider)
-        setWeb3AuthUserInfo(userInfo)
+      if (!web3AuthClientId || web3AuthClientId === 'your_web3auth_client_id_here') {
+        console.warn('Web3Auth client ID not configured. Social login will be disabled.')
+      } else {
+        try {
+          // Initialize Web3Auth only if properly configured
+          await web3AuthService.init()
+          
+          // Check if Web3Auth is already connected
+          if (web3AuthService.isConnected()) {
+            const userInfo = await web3AuthService.getUserInfo()
+            const provider = web3AuthService.getProvider()
+            setIsWeb3AuthConnected(true)
+            setWeb3AuthProvider(provider)
+            setWeb3AuthUserInfo(userInfo)
+          }
+        } catch (web3AuthError) {
+          console.error('Web3Auth initialization failed:', web3AuthError)
+          // Don't set error for Web3Auth failure, just log it
+        }
+      }
+      
+      if (!reownProjectId || reownProjectId === 'your_reown_project_id_here') {
+        console.warn('Reown project ID not configured. Wallet connection may not work properly.')
       }
       
       // Wallet connection status will be handled by useAppKitAccount hook
@@ -74,7 +91,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
     } catch (err) {
       console.error('Auth initialization failed:', err)
-      setError('Failed to initialize authentication')
+      setError('Authentication services are not properly configured. Please check your environment variables.')
     } finally {
       setIsLoading(false)
     }
@@ -85,6 +102,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsLoading(true)
       setError(null)
       
+      const web3AuthClientId = process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID
+      if (!web3AuthClientId || web3AuthClientId === 'your_web3auth_client_id_here') {
+        throw new Error('Social login is not configured. Please set up Web3Auth client ID.')
+      }
+      
       const { provider: web3Provider, userInfo } = await web3AuthService.login(provider)
       
       setIsWeb3AuthConnected(true)
@@ -93,7 +115,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
     } catch (err) {
       console.error('Social login failed:', err)
-      setError('Social login failed')
+      setError(err instanceof Error ? err.message : 'Social login failed')
     } finally {
       setIsLoading(false)
     }
@@ -104,13 +126,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsLoading(true)
       setError(null)
       
+      const reownProjectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID
+      if (!reownProjectId || reownProjectId === 'your_reown_project_id_here') {
+        throw new Error('Wallet connection is not configured. Please set up Reown project ID.')
+      }
+      
       await reownModal.open()
       
       // Connection state will be updated automatically by useAppKitAccount hook
       
     } catch (err) {
       console.error('Wallet connection failed:', err)
-      setError('Wallet connection failed')
+      setError(err instanceof Error ? err.message : 'Wallet connection failed')
     } finally {
       setIsLoading(false)
     }
