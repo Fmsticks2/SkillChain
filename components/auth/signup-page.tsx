@@ -101,13 +101,14 @@ export function SignUpPage() {
   const [error, setError] = useState("")
 
   const {
-    user,
+    // removed user (not provided by context)
     loginWithSocial,
     loginWithWallet,
     isLoading,
     error: authError,
     isWeb3AuthConnected,
-    isWalletConnected
+    isWalletConnected,
+    web3AuthUserInfo,
   } = useAuthContext()
   const router = useRouter()
 
@@ -116,10 +117,11 @@ export function SignUpPage() {
   }, [])
 
   useEffect(() => {
-    if (user) {
+    // Redirect if already authenticated via Web3Auth or Wallet
+    if (isWeb3AuthConnected || isWalletConnected) {
       router.push('/dashboard')
     }
-  }, [user, router])
+  }, [isWeb3AuthConnected, isWalletConnected, router])
 
   useEffect(() => {
     if (authError) {
@@ -132,17 +134,16 @@ export function SignUpPage() {
     setSignupMethod("social")
 
     try {
-      const result = await loginWithSocial(provider)
-      if (result.success && result.user) {
-        // Pre-fill form data from social profile
-        setFormData((prev) => ({
-          ...prev,
-          firstName: result.user.name?.split(" ")[0] || "",
-          lastName: result.user.name?.split(" ").slice(1).join(" ") || "",
-          email: result.user.email || "",
-        }))
-        setShowDetailsForm(true)
-      }
+      await loginWithSocial(provider)
+      // Pre-fill form data from Web3Auth user info if available
+      const info = web3AuthUserInfo as any
+      setFormData((prev) => ({
+        ...prev,
+        firstName: info?.name?.split(" ")[0] || prev.firstName,
+        lastName: info?.name?.split(" ").slice(1).join(" ") || prev.lastName,
+        email: info?.email || prev.email,
+      }))
+      setShowDetailsForm(true)
     } catch (err: any) {
       setError(`${provider} sign up failed. Please try again.`)
     }
@@ -153,15 +154,9 @@ export function SignUpPage() {
     setSignupMethod("wallet")
 
     try {
-      const result = await loginWithWallet()
-      if (result.success && result.user) {
-        // Pre-fill form data from wallet info
-        setFormData((prev) => ({
-          ...prev,
-          email: result.user.email || "",
-        }))
-        setShowDetailsForm(true)
-      }
+      await loginWithWallet()
+      // For wallet signup, we may not have email/name; proceed to details form
+      setShowDetailsForm(true)
     } catch (err: any) {
       setError("Wallet connection failed. Please try again.")
     }

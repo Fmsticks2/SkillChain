@@ -1,6 +1,6 @@
 import { Web3Auth } from '@web3auth/modal'
 import { Web3AuthOptions } from '@web3auth/modal'
-import { CHAIN_NAMESPACES, IProvider, WALLET_ADAPTERS } from '@web3auth/base'
+import { CHAIN_NAMESPACES, IProvider, WALLET_ADAPTERS, WEB3AUTH_NETWORK } from '@web3auth/base'
 import { EthereumPrivateKeyProvider } from '@web3auth/ethereum-provider'
 import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
 
@@ -11,21 +11,22 @@ const chainConfig = {
   chainId: '0x1', // Ethereum Mainnet
   rpcTarget: 'https://rpc.ankr.com/eth',
   displayName: 'Ethereum Mainnet',
-  blockExplorerUrl: 'https://etherscan.io/',
+  blockExplorerUrl: 'https://etherscan.io',
   ticker: 'ETH',
   tickerName: 'Ethereum',
-  logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png',
 }
 
 const privateKeyProvider = new EthereumPrivateKeyProvider({
   config: { chainConfig },
 })
 
+// Attach currentChain to satisfy IBaseProvider requirement expected by downstream types
+;(privateKeyProvider as any).currentChain = chainConfig
+
 const web3AuthOptions: Web3AuthOptions = {
   clientId,
-  web3AuthNetwork: 'sapphire_mainnet', // Use 'testnet' for testing
-  chainConfig,
-  privateKeyProvider,
+  web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
+  privateKeyProvider: privateKeyProvider as any,
   uiConfig: {
     appName: 'SkillChain',
     mode: 'dark',
@@ -52,7 +53,7 @@ const openloginAdapter = new OpenloginAdapter({
   loginSettings: {
     mfaLevel: 'optional',
   },
-  privateKeyProvider,
+  privateKeyProvider: privateKeyProvider as any,
 })
 
 export class Web3AuthService {
@@ -62,7 +63,8 @@ export class Web3AuthService {
   async init(): Promise<void> {
     try {
       this.web3auth = new Web3Auth(web3AuthOptions)
-      this.web3auth.configureAdapter(openloginAdapter)
+      // Note: configureAdapter is only available in Web3AuthNoModal
+      // For Web3Auth modal, adapters are configured automatically
       await this.web3auth.init()
     } catch (error) {
       console.error('Web3Auth initialization failed:', error)
@@ -76,16 +78,11 @@ export class Web3AuthService {
     }
 
     try {
-      this.provider = await this.web3auth.connect({
-        verifier: loginProvider || 'google',
-      })
-      
-      if (!this.provider) {
-        throw new Error('Failed to connect to Web3Auth')
-      }
-
+      // For Web3Auth Modal, connect does not accept provider arguments
+      const provider = await this.web3auth.connect()
+      this.provider = provider
       const userInfo = await this.web3auth.getUserInfo()
-      return { provider: this.provider, userInfo }
+      return { provider: provider as IProvider, userInfo }
     } catch (error) {
       console.error('Web3Auth login failed:', error)
       throw error
@@ -93,10 +90,7 @@ export class Web3AuthService {
   }
 
   async logout(): Promise<void> {
-    if (!this.web3auth) {
-      throw new Error('Web3Auth not initialized')
-    }
-
+    if (!this.web3auth) return
     try {
       await this.web3auth.logout()
       this.provider = null
@@ -107,10 +101,7 @@ export class Web3AuthService {
   }
 
   async getUserInfo(): Promise<any> {
-    if (!this.web3auth) {
-      throw new Error('Web3Auth not initialized')
-    }
-
+    if (!this.web3auth) throw new Error('Web3Auth not initialized')
     try {
       return await this.web3auth.getUserInfo()
     } catch (error) {
@@ -124,7 +115,7 @@ export class Web3AuthService {
   }
 
   isConnected(): boolean {
-    return this.web3auth?.status === 'connected'
+    return !!this.provider
   }
 }
 
