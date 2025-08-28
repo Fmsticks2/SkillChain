@@ -174,8 +174,8 @@ export function SignUpPage() {
       // This would typically involve an API call to save user profile
       await new Promise((resolve) => setTimeout(resolve, 1000))
       
-      // Redirect to dashboard after profile completion
-      router.push("/dashboard")
+      // Redirect to role-specific dashboard after profile completion
+      router.push(`/dashboard/${userType}`)
     } catch (err) {
       setError("Profile setup failed. Please try again.")
     }
