@@ -48,6 +48,30 @@ async function main() {
   await projectEscrow.waitForDeployment();
   console.log(`ProjectEscrow deployed to: ${await projectEscrow.getAddress()}`);
 
+  // Deploy CitreaPaymentManager
+  console.log("Deploying CitreaPaymentManager...");
+  const CitreaPaymentManager = await ethers.getContractFactory("CitreaPaymentManager");
+  const citreaPaymentManager = await CitreaPaymentManager.deploy(
+    250, // 2.5% platform fee
+    deployer.address, // fee recipient
+    ethers.parseEther("0.001") // minimum withdrawal amount (0.001 BTC)
+  );
+  await citreaPaymentManager.waitForDeployment();
+  console.log(`CitreaPaymentManager deployed to: ${await citreaPaymentManager.getAddress()}`);
+
+  // Configure supported tokens in CitreaPaymentManager
+  console.log("Configuring supported tokens...");
+  
+  // Add native BTC (zero address)
+  const addBtcTx = await citreaPaymentManager.addSupportedToken("0x0000000000000000000000000000000000000000");
+  await addBtcTx.wait();
+  console.log("Added native BTC as supported token");
+  
+  // Add SKILL token
+  const addSkillTx = await citreaPaymentManager.addSupportedToken(await skillToken.getAddress());
+  await addSkillTx.wait();
+  console.log("Added SKILL token as supported token");
+
   // Deploy SkillPlatform
   console.log("Deploying SkillPlatform...");
   const SkillPlatform = await ethers.getContractFactory("SkillPlatform");
@@ -95,6 +119,12 @@ async function main() {
   await moderatorRoleTx.wait();
   console.log(`Granted MODERATOR_ROLE to deployer in SkillPlatform`);
 
+  // Grant PLATFORM_ROLE to SkillPlatform in CitreaPaymentManager
+  const PAYMENT_PLATFORM_ROLE = await citreaPaymentManager.PLATFORM_ROLE();
+  const paymentPlatformRoleTx = await citreaPaymentManager.grantRole(PAYMENT_PLATFORM_ROLE, await skillPlatform.getAddress());
+  await paymentPlatformRoleTx.wait();
+  console.log(`Granted PLATFORM_ROLE to SkillPlatform in CitreaPaymentManager`);
+
   // Set platform fee rate (optional)
    const platformFeeRateTx = await skillPlatform.setPlatformFeeRate(250); // 2.5%
    await platformFeeRateTx.wait();
@@ -106,8 +136,30 @@ async function main() {
   console.log(`ProjectEscrow: ${await projectEscrow.getAddress()}`);
   console.log(`SkillToken: ${await skillToken.getAddress()}`);
   console.log(`ReputationToken: ${await reputationToken.getAddress()}`);
+  console.log(`CitreaPaymentManager: ${await citreaPaymentManager.getAddress()}`);
   console.log(`SkillPlatform: ${await skillPlatform.getAddress()}`);
   console.log("\nDeployment completed successfully!");
+
+  // Save deployment addresses to JSON file
+  const deploymentData = {
+    network: hre.network.name,
+    deployer: deployer.address,
+    timestamp: new Date().toISOString(),
+    contracts: {
+      UserRegistry: await userRegistry.getAddress(),
+      SkillVerification: await skillVerification.getAddress(),
+      ProjectEscrow: await projectEscrow.getAddress(),
+      SkillToken: await skillToken.getAddress(),
+      ReputationToken: await reputationToken.getAddress(),
+      CitreaPaymentManager: await citreaPaymentManager.getAddress(),
+      SkillPlatform: await skillPlatform.getAddress()
+    }
+  };
+
+  const fs = require('fs');
+  const deploymentFile = `deployment-${hre.network.name}-${Date.now()}.json`;
+  fs.writeFileSync(deploymentFile, JSON.stringify(deploymentData, null, 2));
+  console.log(`\nDeployment data saved to: ${deploymentFile}`);
 
   // Verify contracts on Citrea Explorer (if supported)
   if (process.env.VERIFY_CONTRACTS === "true") {
@@ -141,6 +193,16 @@ async function main() {
       await hre.run("verify:verify", {
         address: await projectEscrow.getAddress(),
         constructorArguments: [deployer.address],
+      });
+
+      console.log("Verifying CitreaPaymentManager...");
+      await hre.run("verify:verify", {
+        address: await citreaPaymentManager.getAddress(),
+        constructorArguments: [
+          250,
+          deployer.address,
+          ethers.parseEther("0.001")
+        ],
       });
 
       console.log("Verifying SkillPlatform...");

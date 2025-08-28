@@ -10,6 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useEthereum } from "@/hooks/use-ethereum"
 import { useAuth } from "@/lib/auth"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { useCitreaPayments } from "@/hooks/use-citrea-payments"
+import { PaymentInterface } from "@/components/payments/PaymentInterface"
 import {
   Wallet,
   Copy,
@@ -41,6 +43,12 @@ const mockWalletData = {
     apy: 12.5,
     rewards: 156.25,
   },
+}
+
+// Helper function to get token symbol from address
+const getTokenSymbol = (tokenAddress: string): string => {
+  if (tokenAddress === '0x0000000000000000000000000000000000000000') return 'BTC'
+  return 'USDC'
 }
 
 const transactions = [
@@ -126,6 +134,44 @@ export function WalletIntegration() {
   const [activeTab, setActiveTab] = useState("overview")
   const [showConnectDialog, setShowConnectDialog] = useState(false)
   const [showDisconnectDialog, setShowDisconnectDialog] = useState(false)
+  
+  // Use Citrea payments hook for real data
+  const {
+    userBalance,
+    payments,
+    withdrawals,
+    escrows,
+    isLoading: paymentsLoading,
+    error: paymentsError,
+    isContractReady
+  } = useCitreaPayments()
+  
+  // Convert payments and withdrawals to transaction format
+  const citreaTransactions = [
+    ...payments.map(payment => ({
+      id: payment.id,
+      type: "received" as const,
+      amount: parseFloat(payment.amount),
+      token: getTokenSymbol(payment.token),
+      from: "Payment",
+      hash: `0x${payment.id}...`,
+      timestamp: new Date(payment.createdAt * 1000).toISOString(),
+      status: "confirmed" as const,
+    })),
+    ...withdrawals.map(withdrawal => ({
+      id: withdrawal.id,
+      type: "sent" as const,
+      amount: parseFloat(withdrawal.amount),
+      token: getTokenSymbol(withdrawal.token),
+      to: withdrawal.destinationAddress.slice(0, 10) + "...",
+      hash: `0x${withdrawal.id}...`,
+      timestamp: new Date(withdrawal.requestedAt * 1000).toISOString(),
+      status: "confirmed" as const,
+    }))
+  ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+  
+  // Merge with existing mock transactions
+  const allTransactions = [...transactions, ...citreaTransactions]
   
   // Determine if wallet is connected based on currentAccount
   const isConnected = !!currentAccount
@@ -214,8 +260,9 @@ export function WalletIntegration() {
 
         {isConnected ? (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 bg-slate-900/50 border border-slate-800">
+            <TabsList className="grid w-full grid-cols-5 bg-slate-900/50 border border-slate-800">
               <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="payments">Payments</TabsTrigger>
               <TabsTrigger value="transactions">Transactions</TabsTrigger>
               <TabsTrigger value="escrow">Escrow</TabsTrigger>
               <TabsTrigger value="staking">Staking</TabsTrigger>
@@ -235,8 +282,15 @@ export function WalletIntegration() {
                       </div>
                       <TrendingUp className="w-5 h-5 text-emerald-400" />
                     </div>
-                    <p className="text-2xl font-bold">{mockWalletData.balance.eth} ETH</p>
-                          <p className="text-slate-400 text-sm">≈ ${(mockWalletData.balance.eth * 2340).toLocaleString()}</p>
+                    <p className="text-2xl font-bold">
+                      {paymentsLoading ? '...' : mockWalletData.balance.eth} ETH
+                    </p>
+                    <p className="text-slate-400 text-sm">
+                      ≈ ${paymentsLoading ? '...' : (mockWalletData.balance.eth * 2340).toLocaleString()}
+                    </p>
+                    {!isContractReady && (
+                      <div className="text-yellow-400 text-sm mt-2">Contract not deployed</div>
+                    )}
                   </Card>
                 </motion.div>
 
@@ -251,8 +305,13 @@ export function WalletIntegration() {
                       </div>
                       <TrendingUp className="w-5 h-5 text-emerald-400" />
                     </div>
-                    <p className="text-2xl font-bold">${mockWalletData.balance.usdc.toLocaleString()}</p>
+                    <p className="text-2xl font-bold">
+                      ${paymentsLoading ? '...' : (userBalance.usdc || mockWalletData.balance.usdc).toLocaleString()}
+                    </p>
                     <p className="text-slate-400 text-sm">Stable Coin</p>
+                    {!isContractReady && (
+                      <div className="text-yellow-400 text-sm mt-2">Contract not deployed</div>
+                    )}
                   </Card>
                 </motion.div>
 
@@ -267,8 +326,13 @@ export function WalletIntegration() {
                       </div>
                       <TrendingUp className="w-5 h-5 text-emerald-400" />
                     </div>
-                    <p className="text-2xl font-bold">{mockWalletData.balance.skill.toLocaleString()} SKILL</p>
+                    <p className="text-2xl font-bold">
+                      {paymentsLoading ? '...' : (userBalance.skill || mockWalletData.balance.skill).toLocaleString()} SKILL
+                    </p>
                     <p className="text-slate-400 text-sm">Platform Token</p>
+                    {!isContractReady && (
+                      <div className="text-yellow-400 text-sm mt-2">Contract not deployed</div>
+                    )}
                   </Card>
                 </motion.div>
               </div>
@@ -308,6 +372,10 @@ export function WalletIntegration() {
               </motion.div>
             </TabsContent>
 
+            <TabsContent value="payments" className="space-y-6">
+              <PaymentInterface />
+            </TabsContent>
+
             <TabsContent value="transactions" className="space-y-6">
               <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
                 <div className="flex items-center justify-between mb-6">
@@ -319,7 +387,7 @@ export function WalletIntegration() {
                 </div>
 
                 <div className="space-y-4">
-                  {transactions.map((tx, index) => (
+                  {allTransactions.map((tx, index) => (
                     <motion.div
                       key={tx.id}
                       initial={{ opacity: 0, x: -20 }}
@@ -344,7 +412,7 @@ export function WalletIntegration() {
                             {tx.type === "received" ? "Received" : "Sent"} {tx.amount} {tx.token}
                           </p>
                           <p className="text-slate-400 text-sm">
-                            {tx.type === "received" ? `From: ${tx.from}` : `To: ${tx.to}`}
+                            {tx.type === "received" ? `From: ${(tx as any).from}` : `To: ${(tx as any).to || 'Unknown'}`}
                           </p>
                         </div>
                       </div>

@@ -6,6 +6,7 @@ import SkillVerificationABI from '../artifacts/contracts/core/SkillVerification.
 import ProjectEscrowABI from '../artifacts/contracts/escrow/ProjectEscrow.sol/ProjectEscrow.json';
 import SkillTokenABI from '../artifacts/contracts/tokens/SkillToken.sol/SkillToken.json';
 import ReputationTokenABI from '../artifacts/contracts/tokens/ReputationToken.sol/ReputationToken.json';
+import CitreaPaymentManagerABI from '../artifacts/contracts/core/CitreaPaymentManager.sol/CitreaPaymentManager.json';
 
 // Contract addresses - these would be populated after deployment
 const CONTRACT_ADDRESSES = {
@@ -17,6 +18,7 @@ const CONTRACT_ADDRESSES = {
     projectEscrow: '',
     skillToken: '',
     reputationToken: '',
+    citreaPaymentManager: '',
   },
   // Citrea Mainnet
   mainnet: {
@@ -26,6 +28,7 @@ const CONTRACT_ADDRESSES = {
     projectEscrow: '',
     skillToken: '',
     reputationToken: '',
+    citreaPaymentManager: '',
   },
 };
 
@@ -41,6 +44,11 @@ const NETWORKS = {
     },
     rpcUrls: ['https://rpc.testnet.citrea.xyz'], // Citrea testnet RPC URL
     blockExplorerUrls: ['https://testnet-explorer.citrea.xyz'], // Replace with actual Citrea testnet explorer URL
+    supportedTokens: {
+      BTC: '0x0000000000000000000000000000000000000000', // Native BTC
+      USDC: '0x0000000000000000000000000000000000000000', // To be updated
+      SKILL: '0x0000000000000000000000000000000000000000' // To be updated
+    }
   },
   mainnet: {
     chainId: '0x5678', // Replace with actual Citrea mainnet chain ID
@@ -52,6 +60,11 @@ const NETWORKS = {
     },
     rpcUrls: ['https://rpc.citrea.xyz'], // Replace with actual Citrea mainnet RPC URL
     blockExplorerUrls: ['https://explorer.citrea.xyz'], // Replace with actual Citrea mainnet explorer URL
+    supportedTokens: {
+      BTC: '0x0000000000000000000000000000000000000000', // Native BTC
+      USDC: '0x0000000000000000000000000000000000000000', // To be updated
+      SKILL: '0x0000000000000000000000000000000000000000' // To be updated
+    }
   },
 };
 
@@ -91,6 +104,27 @@ export enum EscrowStatus {
   Refunded,
   Disputed,
   Resolved,
+}
+
+export enum PaymentStatus {
+  Pending,
+  Completed,
+  Failed,
+  Refunded,
+  Disputed,
+}
+
+export enum WithdrawalStatus {
+  Pending,
+  Processing,
+  Completed,
+  Failed,
+}
+
+export enum SupportedTokens {
+  BTC = 'BTC',
+  USDC = 'USDC',
+  SKILL = 'SKILL',
 }
 
 // Type definitions
@@ -148,6 +182,53 @@ export interface Escrow {
   updatedAt: number;
 }
 
+export interface CitreaPayment {
+  id: number;
+  payer: string;
+  payee: string;
+  amount: bigint;
+  token: string;
+  status: PaymentStatus;
+  createdAt: number;
+  completedAt: number;
+  metadata: string;
+}
+
+export interface CitreaWithdrawal {
+  id: number;
+  user: string;
+  amount: bigint;
+  token: string;
+  status: WithdrawalStatus;
+  requestedAt: number;
+  processedAt: number;
+  destinationAddress: string;
+}
+
+export interface CitreaMilestoneEscrow {
+  id: number;
+  projectId: number;
+  client: string;
+  freelancer: string;
+  totalAmount: bigint;
+  releasedAmount: bigint;
+  token: string;
+  isActive: boolean;
+  milestones: CitreaMilestone[];
+}
+
+export interface CitreaMilestone {
+  amount: bigint;
+  isReleased: boolean;
+  releasedAt: number;
+}
+
+export interface UserBalance {
+  btc: bigint;
+  usdc: bigint;
+  skill: bigint;
+}
+
 // Contract integration class
 export class ContractIntegration {
   private provider: ethers.BrowserProvider | null = null;
@@ -160,6 +241,7 @@ export class ContractIntegration {
     projectEscrow: ethers.Contract | null;
     skillToken: ethers.Contract | null;
     reputationToken: ethers.Contract | null;
+    citreaPaymentManager: ethers.Contract | null;
   };
 
   constructor(network: 'testnet' | 'mainnet' = 'testnet') {
@@ -171,6 +253,7 @@ export class ContractIntegration {
       projectEscrow: null,
       skillToken: null,
       reputationToken: null,
+      citreaPaymentManager: null,
     };
   }
 
@@ -254,6 +337,7 @@ export class ContractIntegration {
       projectEscrow: new ethers.Contract(addresses.projectEscrow, ProjectEscrowABI.abi, this.signer),
       skillToken: new ethers.Contract(addresses.skillToken, SkillTokenABI.abi, this.signer),
       reputationToken: new ethers.Contract(addresses.reputationToken, ReputationTokenABI.abi, this.signer),
+      citreaPaymentManager: new ethers.Contract(addresses.citreaPaymentManager, CitreaPaymentManagerABI.abi, this.signer),
     };
   }
 
