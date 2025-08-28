@@ -72,29 +72,29 @@ export default function FreelancerSettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Settings</h1>
-          <p className="text-slate-600 mt-2">Manage your account preferences and profile settings</p>
+          <h1 className="text-3xl font-bold text-white">Settings</h1>
+          <p className="text-slate-400 mt-2">Manage your account preferences and profile settings</p>
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="profile" className="flex items-center space-x-2">
+          <TabsList className="grid w-full grid-cols-4 bg-slate-900 border-slate-800">
+            <TabsTrigger value="profile" className="flex items-center space-x-2 data-[state=active]:bg-slate-800 data-[state=active]:text-white">
               <User className="w-4 h-4" />
               <span>Profile</span>
             </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center space-x-2">
+            <TabsTrigger value="notifications" className="flex items-center space-x-2 data-[state=active]:bg-slate-800 data-[state=active]:text-white">
               <Bell className="w-4 h-4" />
               <span>Notifications</span>
             </TabsTrigger>
-            <TabsTrigger value="privacy" className="flex items-center space-x-2">
+            <TabsTrigger value="privacy" className="flex items-center space-x-2 data-[state=active]:bg-slate-800 data-[state=active]:text-white">
               <Shield className="w-4 h-4" />
               <span>Privacy</span>
             </TabsTrigger>
-            <TabsTrigger value="billing" className="flex items-center space-x-2">
+            <TabsTrigger value="billing" className="flex items-center space-x-2 data-[state=active]:bg-slate-800 data-[state=active]:text-white">
               <CreditCard className="w-4 h-4" />
               <span>Billing</span>
             </TabsTrigger>
@@ -102,9 +102,9 @@ export default function FreelancerSettingsPage() {
 
           <TabsContent value="profile" className="space-y-6">
             {/* Profile Information */}
-            <Card>
+            <Card className="bg-slate-900 border-slate-800">
               <CardHeader>
-                <CardTitle>Profile Information</CardTitle>
+                <CardTitle className="text-white">Profile Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Avatar Upload */}
@@ -241,9 +241,9 @@ export default function FreelancerSettingsPage() {
 
           <TabsContent value="notifications" className="space-y-6">
             {/* Notification Preferences */}
-            <Card>
+            <Card className="bg-slate-900 border-slate-800">
               <CardHeader>
-                <CardTitle>Notification Preferences</CardTitle>
+                <CardTitle className="text-white">Notification Preferences</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
@@ -353,9 +353,9 @@ export default function FreelancerSettingsPage() {
 
           <TabsContent value="privacy" className="space-y-6">
             {/* Privacy & Security */}
-            <Card>
+            <Card className="bg-slate-900 border-slate-800">
               <CardHeader>
-                <CardTitle>Privacy Settings</CardTitle>
+                <CardTitle className="text-white">Privacy Settings</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
@@ -478,9 +478,9 @@ export default function FreelancerSettingsPage() {
 
           <TabsContent value="billing" className="space-y-6">
             {/* Billing & Payments */}
-            <Card>
+            <Card className="bg-slate-900 border-slate-800">
               <CardHeader>
-                <CardTitle>Payment Methods</CardTitle>
+                <CardTitle className="text-white">Payment Methods</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="border rounded-lg p-4">
@@ -504,9 +504,9 @@ export default function FreelancerSettingsPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="bg-slate-900 border-slate-800">
               <CardHeader>
-                <CardTitle>Billing Information</CardTitle>
+                <CardTitle className="text-white">Billing Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -545,9 +545,9 @@ export default function FreelancerSettingsPage() {
             </Card>
 
             {/* Danger Zone */}
-            <Card className="border-red-200">
+            <Card className="bg-slate-900 border-red-800">
               <CardHeader>
-                <CardTitle className="text-red-600 flex items-center space-x-2">
+                <CardTitle className="text-red-400 flex items-center space-x-2">
                   <AlertTriangle className="w-5 h-5" />
                   <span>Danger Zone</span>
                 </CardTitle>

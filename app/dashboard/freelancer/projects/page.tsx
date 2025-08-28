@@ -118,12 +118,12 @@ export default function FreelancerProjectsPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Projects</h1>
-          <p className="text-slate-600 mt-2">Find and manage your freelance projects</p>
+          <h1 className="text-3xl font-bold text-white">Projects</h1>
+          <p className="text-slate-400 mt-2">Find and manage your freelance projects</p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -135,7 +135,7 @@ export default function FreelancerProjectsPage() {
 
           <TabsContent value="browse" className="space-y-6">
             {/* Search and Filters */}
-            <Card>
+            <Card className="bg-slate-900 border-slate-800">
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="md:col-span-2">
@@ -145,7 +145,7 @@ export default function FreelancerProjectsPage() {
                         placeholder="Search projects by title, skills, or keywords..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10"
+                        className="pl-10 bg-slate-800 border-slate-700 text-white"
                       />
                     </div>
                   </div>
@@ -161,7 +161,7 @@ export default function FreelancerProjectsPage() {
                       <SelectItem value="writing">Writing</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button variant="outline">
+                  <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800">
                     <Filter className="w-4 h-4 mr-2" />
                     More Filters
                   </Button>
@@ -172,17 +172,17 @@ export default function FreelancerProjectsPage() {
             {/* Available Projects */}
             <div className="space-y-6">
               {availableProjects.map((project) => (
-                <Card key={project.id} className="hover:shadow-lg transition-shadow">
+                <Card key={project.id} className="bg-slate-900 border-slate-800 hover:shadow-lg transition-shadow">
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
-                          <h3 className="text-xl font-semibold text-slate-900">{project.title}</h3>
+                          <h3 className="text-xl font-semibold text-white">{project.title}</h3>
                           <Badge variant="secondary" className="bg-green-100 text-green-700">
                             {project.match}% match
                           </Badge>
                         </div>
-                        <p className="text-slate-600 mb-4">{project.description}</p>
+                        <p className="text-slate-400 mb-4">{project.description}</p>
                       </div>
                       <Button variant="ghost" size="sm">
                         <Bookmark className={`w-4 h-4 ${project.saved ? 'fill-current text-blue-500' : ''}`} />
@@ -197,7 +197,7 @@ export default function FreelancerProjectsPage() {
                         </Avatar>
                         <span className="text-sm font-medium">{project.client}</span>
                       </div>
-                      <div className="flex items-center text-sm text-slate-600">
+                      <div className="flex items-center text-sm text-slate-400">
                         <DollarSign className="w-4 h-4 mr-1" />
                         {project.budget}
                       </div>
@@ -243,12 +243,12 @@ export default function FreelancerProjectsPage() {
           <TabsContent value="my-projects" className="space-y-6">
             <div className="grid gap-6">
               {myProjects.map((project) => (
-                <Card key={project.id}>
+                <Card key={project.id} className="bg-slate-900 border-slate-800">
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <h3 className="text-xl font-semibold text-slate-900">{project.title}</h3>
-                        <p className="text-slate-600">Client: {project.client}</p>
+                        <h3 className="text-xl font-semibold text-white">{project.title}</h3>
+                        <p className="text-slate-400">Client: {project.client}</p>
                       </div>
                       <Badge variant={project.status === 'In Progress' ? 'default' : 'secondary'}>
                         {project.status}
@@ -257,25 +257,25 @@ export default function FreelancerProjectsPage() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                       <div>
-                        <p className="text-sm text-slate-600">Budget</p>
-                        <p className="font-medium">{project.budget}</p>
+                        <p className="text-sm text-slate-400">Budget</p>
+                        <p className="font-medium text-white">{project.budget}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-slate-600">Deadline</p>
-                        <p className="font-medium">{project.deadline}</p>
+                        <p className="text-sm text-slate-400">Deadline</p>
+                        <p className="font-medium text-white">{project.deadline}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-slate-600">Progress</p>
-                        <p className="font-medium">{project.progress}%</p>
+                        <p className="text-sm text-slate-400">Progress</p>
+                        <p className="font-medium text-white">{project.progress}%</p>
                       </div>
                       <div>
-                        <p className="text-sm text-slate-600">Last Update</p>
-                        <p className="font-medium">{project.lastUpdate}</p>
+                        <p className="text-sm text-slate-400">Last Update</p>
+                        <p className="font-medium text-white">{project.lastUpdate}</p>
                       </div>
                     </div>
                     
                     <div className="flex justify-end space-x-2">
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="border-slate-700 text-slate-300 hover:bg-slate-800">
                         View Details
                       </Button>
                       <Button size="sm">
@@ -291,12 +291,12 @@ export default function FreelancerProjectsPage() {
           <TabsContent value="proposals" className="space-y-6">
             <div className="grid gap-6">
               {proposals.map((proposal) => (
-                <Card key={proposal.id}>
+                <Card key={proposal.id} className="bg-slate-900 border-slate-800">
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <h3 className="text-xl font-semibold text-slate-900">{proposal.title}</h3>
-                        <p className="text-slate-600">Client: {proposal.client}</p>
+                        <h3 className="text-xl font-semibold text-white">{proposal.title}</h3>
+                        <p className="text-slate-400">Client: {proposal.client}</p>
                       </div>
                       <Badge variant={proposal.status === 'Shortlisted' ? 'default' : 'secondary'}>
                         {proposal.status}
@@ -305,21 +305,21 @@ export default function FreelancerProjectsPage() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                       <div>
-                        <p className="text-sm text-slate-600">Proposed Budget</p>
-                        <p className="font-medium">{proposal.proposedBudget}</p>
+                        <p className="text-sm text-slate-400">Proposed Budget</p>
+                        <p className="font-medium text-white">{proposal.proposedBudget}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-slate-600">Submitted</p>
-                        <p className="font-medium">{proposal.submittedDate}</p>
+                        <p className="text-sm text-slate-400">Submitted</p>
+                        <p className="font-medium text-white">{proposal.submittedDate}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-slate-600">Response Time</p>
-                        <p className="font-medium">{proposal.responseTime}</p>
+                        <p className="text-sm text-slate-400">Response Time</p>
+                        <p className="font-medium text-white">{proposal.responseTime}</p>
                       </div>
                     </div>
                     
                     <div className="flex justify-end space-x-2">
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="border-slate-700 text-slate-300 hover:bg-slate-800">
                         View Proposal
                       </Button>
                       <Button size="sm">

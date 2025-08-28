@@ -127,13 +127,13 @@ export default function FreelancerSkillsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">My Skills</h1>
-            <p className="text-slate-600 mt-2">Manage your skills and expertise to attract better projects</p>
+            <h1 className="text-3xl font-bold text-white">My Skills</h1>
+            <p className="text-slate-400 mt-2">Manage your skills and expertise to attract better projects</p>
           </div>
           <Dialog open={isAddSkillOpen} onOpenChange={setIsAddSkillOpen}>
             <DialogTrigger asChild>
@@ -142,22 +142,23 @@ export default function FreelancerSkillsPage() {
                 Add New Skill
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="sm:max-w-[500px] bg-slate-900 border-slate-800">
               <DialogHeader>
-                <DialogTitle>Add New Skill</DialogTitle>
+                <DialogTitle className="text-white">Add New Skill</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="skill-name">Skill Name</Label>
+                  <Label htmlFor="skill-name" className="text-slate-300">Skill Name</Label>
                   <Input
                     id="skill-name"
                     placeholder="e.g., React.js, Photoshop, Content Writing"
                     value={newSkill.name}
                     onChange={(e) => setNewSkill({...newSkill, name: e.target.value})}
+                    className="bg-slate-800 border-slate-700 text-white"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="skill-category">Category</Label>
+                  <Label htmlFor="skill-category" className="text-slate-300">Category</Label>
                   <Select value={newSkill.category} onValueChange={(value) => setNewSkill({...newSkill, category: value})}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a category" />
@@ -170,7 +171,7 @@ export default function FreelancerSkillsPage() {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="skill-level">Skill Level: {getLevelText(newSkill.level[0])}</Label>
+                  <Label htmlFor="skill-level" className="text-slate-300">Skill Level: {getLevelText(newSkill.level[0])}</Label>
                   <Slider
                     value={newSkill.level}
                     onValueChange={(value) => setNewSkill({...newSkill, level: value})}
@@ -214,48 +215,48 @@ export default function FreelancerSkillsPage() {
 
         {/* Skills Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-6">
               <div className="flex items-center space-x-2">
-                <Award className="w-8 h-8 text-blue-500" />
+                <Award className="w-8 h-8 text-blue-400" />
                 <div>
-                  <p className="text-2xl font-bold text-slate-900">{skills.length}</p>
-                  <p className="text-sm text-slate-600">Total Skills</p>
+                  <p className="text-2xl font-bold text-white">{skills.length}</p>
+                  <p className="text-sm text-slate-400">Total Skills</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-6">
               <div className="flex items-center space-x-2">
-                <Star className="w-8 h-8 text-yellow-500" />
+                <Star className="w-8 h-8 text-yellow-400" />
                 <div>
-                  <p className="text-2xl font-bold text-slate-900">{skills.filter(s => s.level >= 4).length}</p>
-                  <p className="text-sm text-slate-600">Expert Skills</p>
+                  <p className="text-2xl font-bold text-white">{skills.filter(s => s.level >= 4).length}</p>
+                  <p className="text-sm text-slate-400">Expert Skills</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-6">
               <div className="flex items-center space-x-2">
-                <BarChart3 className="w-8 h-8 text-green-500" />
+                <BarChart3 className="w-8 h-8 text-green-400" />
                 <div>
-                  <p className="text-2xl font-bold text-slate-900">{skills.reduce((sum, skill) => sum + skill.projects, 0)}</p>
-                  <p className="text-sm text-slate-600">Total Projects</p>
+                  <p className="text-2xl font-bold text-white">{skills.reduce((sum, skill) => sum + skill.projects, 0)}</p>
+                  <p className="text-sm text-slate-400">Total Projects</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-6">
               <div className="flex items-center space-x-2">
-                <TrendingUp className="w-8 h-8 text-purple-500" />
+                <TrendingUp className="w-8 h-8 text-purple-400" />
                 <div>
-                  <p className="text-2xl font-bold text-slate-900">
+                  <p className="text-2xl font-bold text-white">
                     ${skills.reduce((sum, skill) => sum + parseInt(skill.earnings.replace(/[$,]/g, '')), 0).toLocaleString()}
                   </p>
-                  <p className="text-sm text-slate-600">Total Earnings</p>
+                  <p className="text-sm text-slate-400">Total Earnings</p>
                 </div>
               </div>
             </CardContent>
@@ -267,16 +268,16 @@ export default function FreelancerSkillsPage() {
           {skills.map((skill) => {
             const IconComponent = skill.icon
             return (
-              <Card key={skill.id} className="hover:shadow-lg transition-shadow">
+              <Card key={skill.id} className="bg-slate-900 border-slate-800 hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-blue-100 rounded-lg">
-                        <IconComponent className="w-6 h-6 text-blue-600" />
+                      <div className="p-2 bg-blue-500/20 rounded-lg">
+                        <IconComponent className="w-6 h-6 text-blue-400" />
                       </div>
                       <div>
-                        <CardTitle className="text-lg">{skill.name}</CardTitle>
-                        <p className="text-sm text-slate-600">{skill.category}</p>
+                        <CardTitle className="text-lg text-white">{skill.name}</CardTitle>
+                        <p className="text-sm text-slate-400">{skill.category}</p>
                       </div>
                     </div>
                     <div className="flex space-x-1">
@@ -292,27 +293,27 @@ export default function FreelancerSkillsPage() {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600">Skill Level</span>
+                      <span className="text-sm text-slate-400">Skill Level</span>
                       <Badge className={getLevelColor(skill.level)}>
                         {getLevelText(skill.level)}
                       </Badge>
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600">Experience</span>
+                      <span className="text-sm text-slate-400">Experience</span>
                       <span className="text-sm font-medium">{skill.experience}</span>
                     </div>
                     
-                    <p className="text-sm text-slate-600 line-clamp-2">{skill.description}</p>
+                    <p className="text-sm text-slate-400 line-clamp-2">{skill.description}</p>
                     
                     <div className="grid grid-cols-2 gap-4 pt-2 border-t">
                       <div className="text-center">
-                        <p className="text-lg font-bold text-slate-900">{skill.projects}</p>
-                        <p className="text-xs text-slate-600">Projects</p>
+                        <p className="text-lg font-bold text-white">{skill.projects}</p>
+                        <p className="text-xs text-slate-400">Projects</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-lg font-bold text-green-600">{skill.earnings}</p>
-                        <p className="text-xs text-slate-600">Earned</p>
+                        <p className="text-lg font-bold text-green-400">{skill.earnings}</p>
+                        <p className="text-xs text-slate-400">Earned</p>
                       </div>
                     </div>
                   </div>
@@ -323,9 +324,9 @@ export default function FreelancerSkillsPage() {
         </div>
 
         {/* Skill Recommendations */}
-        <Card className="mt-8">
+        <Card className="mt-8 bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
+            <CardTitle className="flex items-center space-x-2 text-white">
               <TrendingUp className="w-5 h-5" />
               <span>Recommended Skills to Add</span>
             </CardTitle>
@@ -337,16 +338,16 @@ export default function FreelancerSkillsPage() {
                 { name: 'Python', demand: 'Very High', avgRate: '$50/hr' },
                 { name: 'AWS', demand: 'High', avgRate: '$60/hr' }
               ].map((recommendation, index) => (
-                <div key={index} className="p-4 border rounded-lg hover:bg-slate-50 transition-colors">
+                <div key={index} className="p-4 border border-slate-700 rounded-lg hover:bg-slate-800 transition-colors">
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium">{recommendation.name}</h4>
+                    <h4 className="font-medium text-white">{recommendation.name}</h4>
                     <Button variant="outline" size="sm">
                       <Plus className="w-3 h-3 mr-1" />
                       Add
                     </Button>
                   </div>
-                  <p className="text-sm text-slate-600">Demand: {recommendation.demand}</p>
-                  <p className="text-sm text-green-600">Avg Rate: {recommendation.avgRate}</p>
+                  <p className="text-sm text-slate-400">Demand: {recommendation.demand}</p>
+                  <p className="text-sm text-green-400">Avg Rate: {recommendation.avgRate}</p>
                 </div>
               ))}
             </div>

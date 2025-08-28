@@ -175,17 +175,17 @@ export default function FreelancerMessagesPage() {
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-slate-900">Messages</h1>
-          <p className="text-slate-600 mt-2">Communicate with your clients</p>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white">Messages</h1>
+          <p className="text-slate-400 mt-2">Communicate with your clients</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
           {/* Conversations List */}
-          <Card className="lg:col-span-1">
+          <Card className="lg:col-span-1 bg-slate-900 border-slate-800">
             <CardHeader className="pb-3">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
@@ -193,7 +193,7 @@ export default function FreelancerMessagesPage() {
                   placeholder="Search conversations..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 bg-slate-800 border-slate-700 text-white"
                 />
               </div>
             </CardHeader>
@@ -203,9 +203,9 @@ export default function FreelancerMessagesPage() {
                   <div
                     key={conversation.id}
                     onClick={() => setSelectedConversation(conversation.id)}
-                    className={`p-4 cursor-pointer hover:bg-slate-50 transition-colors border-l-4 ${
+                    className={`p-4 cursor-pointer hover:bg-slate-800 transition-colors border-l-4 ${
                       selectedConversation === conversation.id 
-                        ? 'bg-blue-50 border-l-blue-500' 
+                        ? 'bg-slate-800 border-l-blue-500' 
                         : 'border-l-transparent'
                     }`}
                   >
@@ -221,18 +221,18 @@ export default function FreelancerMessagesPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
-                          <h4 className="font-medium text-slate-900 truncate">{conversation.client}</h4>
+                          <h4 className="font-medium text-white truncate">{conversation.client}</h4>
                           <div className="flex items-center space-x-1">
                             {conversation.unread > 0 && (
                               <Badge variant="destructive" className="text-xs px-1.5 py-0.5">
                                 {conversation.unread}
                               </Badge>
                             )}
-                            <span className="text-xs text-slate-500">{conversation.timestamp}</span>
+                            <span className="text-xs text-slate-400">{conversation.timestamp}</span>
                           </div>
                         </div>
-                        <p className="text-sm text-blue-600 mb-1">{conversation.project}</p>
-                        <p className="text-sm text-slate-600 truncate">{conversation.lastMessage}</p>
+                        <p className="text-sm text-blue-400 mb-1">{conversation.project}</p>
+                        <p className="text-sm text-slate-400 truncate">{conversation.lastMessage}</p>
                       </div>
                     </div>
                   </div>
@@ -242,7 +242,7 @@ export default function FreelancerMessagesPage() {
           </Card>
 
           {/* Chat Area */}
-          <Card className="lg:col-span-2 flex flex-col">
+          <Card className="lg:col-span-2 flex flex-col bg-slate-900 border-slate-800">
             {currentConversation ? (
               <>
                 {/* Chat Header */}
@@ -259,9 +259,9 @@ export default function FreelancerMessagesPage() {
                         )}
                       </div>
                       <div>
-                        <h3 className="font-semibold text-slate-900">{currentConversation.client}</h3>
-                        <p className="text-sm text-blue-600">{currentConversation.project}</p>
-                        <p className="text-xs text-slate-500">
+                        <h3 className="font-semibold text-white">{currentConversation.client}</h3>
+                        <p className="text-sm text-blue-400">{currentConversation.project}</p>
+                        <p className="text-xs text-slate-400">
                           {currentConversation.online ? 'Online' : 'Last seen 2 hours ago'}
                         </p>
                       </div>

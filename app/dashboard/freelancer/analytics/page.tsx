@@ -113,13 +113,13 @@ export default function FreelancerAnalyticsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Analytics</h1>
-            <p className="text-slate-600 mt-2">Track your freelance performance and earnings</p>
+            <h1 className="text-3xl font-bold text-white">Analytics</h1>
+            <p className="text-slate-400 mt-2">Track your freelance performance and earnings</p>
           </div>
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger className="w-40">
@@ -136,12 +136,12 @@ export default function FreelancerAnalyticsPage() {
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-600">Total Earnings</p>
-                  <p className="text-2xl font-bold text-slate-900">${stats.totalEarnings.toLocaleString()}</p>
+                  <p className="text-sm text-slate-400">Total Earnings</p>
+                  <p className="text-2xl font-bold text-white">${stats.totalEarnings.toLocaleString()}</p>
                   <div className="flex items-center space-x-1 mt-1">
                     {getChangeIcon(stats.earningsChange)}
                     <span className={`text-sm ${getChangeColor(stats.earningsChange)}`}>
@@ -149,19 +149,19 @@ export default function FreelancerAnalyticsPage() {
                     </span>
                   </div>
                 </div>
-                <div className="p-3 bg-green-100 rounded-lg">
-                  <DollarSign className="w-6 h-6 text-green-600" />
+                <div className="p-3 bg-green-500/20 rounded-lg">
+                  <DollarSign className="w-6 h-6 text-green-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-600">Active Projects</p>
-                  <p className="text-2xl font-bold text-slate-900">{stats.activeProjects}</p>
+                  <p className="text-sm text-slate-400">Active Projects</p>
+                  <p className="text-2xl font-bold text-white">{stats.activeProjects}</p>
                   <div className="flex items-center space-x-1 mt-1">
                     {getChangeIcon(stats.projectsChange)}
                     <span className={`text-sm ${getChangeColor(stats.projectsChange)}`}>
@@ -169,19 +169,19 @@ export default function FreelancerAnalyticsPage() {
                     </span>
                   </div>
                 </div>
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <Activity className="w-6 h-6 text-blue-600" />
+                <div className="p-3 bg-blue-500/20 rounded-lg">
+                  <Activity className="w-6 h-6 text-blue-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-600">Completed Projects</p>
-                  <p className="text-2xl font-bold text-slate-900">{stats.completedProjects}</p>
+                  <p className="text-sm text-slate-400">Completed Projects</p>
+                  <p className="text-2xl font-bold text-white">{stats.completedProjects}</p>
                   <div className="flex items-center space-x-1 mt-1">
                     {getChangeIcon(stats.completedChange)}
                     <span className={`text-sm ${getChangeColor(stats.completedChange)}`}>
@@ -189,19 +189,19 @@ export default function FreelancerAnalyticsPage() {
                     </span>
                   </div>
                 </div>
-                <div className="p-3 bg-purple-100 rounded-lg">
-                  <Award className="w-6 h-6 text-purple-600" />
+                <div className="p-3 bg-purple-500/20 rounded-lg">
+                  <Award className="w-6 h-6 text-purple-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-600">Average Rating</p>
-                  <p className="text-2xl font-bold text-slate-900">{stats.avgRating}</p>
+                  <p className="text-sm text-slate-400">Average Rating</p>
+                  <p className="text-2xl font-bold text-white">{stats.avgRating}</p>
                   <div className="flex items-center space-x-1 mt-1">
                     {getChangeIcon(stats.ratingChange)}
                     <span className={`text-sm ${getChangeColor(stats.ratingChange)}`}>
@@ -209,19 +209,19 @@ export default function FreelancerAnalyticsPage() {
                     </span>
                   </div>
                 </div>
-                <div className="p-3 bg-yellow-100 rounded-lg">
-                  <Star className="w-6 h-6 text-yellow-600" />
+                <div className="p-3 bg-yellow-500/20 rounded-lg">
+                  <Star className="w-6 h-6 text-yellow-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-600">Avg Response Time</p>
-                  <p className="text-2xl font-bold text-slate-900">{stats.responseTime}</p>
+                  <p className="text-sm text-slate-400">Avg Response Time</p>
+                  <p className="text-2xl font-bold text-white">{stats.responseTime}</p>
                   <div className="flex items-center space-x-1 mt-1">
                     {getChangeIcon(stats.timeChange)}
                     <span className={`text-sm ${getChangeColor(stats.timeChange)}`}>
@@ -229,19 +229,19 @@ export default function FreelancerAnalyticsPage() {
                     </span>
                   </div>
                 </div>
-                <div className="p-3 bg-orange-100 rounded-lg">
-                  <Clock className="w-6 h-6 text-orange-600" />
+                <div className="p-3 bg-orange-500/20 rounded-lg">
+                  <Clock className="w-6 h-6 text-orange-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-600">Profile Views</p>
-                  <p className="text-2xl font-bold text-slate-900">{stats.profileViews}</p>
+                  <p className="text-sm text-slate-400">Profile Views</p>
+                  <p className="text-2xl font-bold text-white">{stats.profileViews}</p>
                   <div className="flex items-center space-x-1 mt-1">
                     {getChangeIcon(stats.viewsChange)}
                     <span className={`text-sm ${getChangeColor(stats.viewsChange)}`}>
@@ -249,8 +249,8 @@ export default function FreelancerAnalyticsPage() {
                     </span>
                   </div>
                 </div>
-                <div className="p-3 bg-cyan-100 rounded-lg">
-                  <Users className="w-6 h-6 text-cyan-600" />
+                <div className="p-3 bg-cyan-500/20 rounded-lg">
+                  <Users className="w-6 h-6 text-cyan-400" />
                 </div>
               </div>
             </CardContent>
@@ -266,9 +266,9 @@ export default function FreelancerAnalyticsPage() {
 
           <TabsContent value="earnings" className="space-y-6">
             {/* Monthly Earnings Chart */}
-            <Card>
+            <Card className="bg-slate-900 border-slate-800">
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
+                <CardTitle className="flex items-center space-x-2 text-white">
                   <BarChart3 className="w-5 h-5" />
                   <span>Monthly Earnings Trend</span>
                 </CardTitle>
@@ -281,7 +281,7 @@ export default function FreelancerAnalyticsPage() {
                         className="w-full bg-gradient-to-t from-blue-500 to-cyan-500 rounded-t-md transition-all hover:from-blue-600 hover:to-cyan-600"
                         style={{ height: `${(data.amount / 4000) * 200}px` }}
                       ></div>
-                      <span className="text-sm text-slate-600 mt-2">{data.month}</span>
+                      <span className="text-sm text-slate-400 mt-2">{data.month}</span>
                       <span className="text-xs text-slate-500">${data.amount}</span>
                     </div>
                   ))}
@@ -292,9 +292,9 @@ export default function FreelancerAnalyticsPage() {
 
           <TabsContent value="skills" className="space-y-6">
             {/* Top Skills Performance */}
-            <Card>
+            <Card className="bg-slate-900 border-slate-800">
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
+                <CardTitle className="flex items-center space-x-2 text-white">
                   <Target className="w-5 h-5" />
                   <span>Top Performing Skills</span>
                 </CardTitle>
@@ -302,19 +302,19 @@ export default function FreelancerAnalyticsPage() {
               <CardContent>
                 <div className="space-y-4">
                   {topSkills.map((skill, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-4 border border-slate-700 rounded-lg">
                       <div className="flex items-center space-x-4">
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                          <span className="font-bold text-blue-600">#{index + 1}</span>
+                        <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                          <span className="font-bold text-blue-400">#{index + 1}</span>
                         </div>
                         <div>
-                          <h4 className="font-medium text-slate-900">{skill.skill}</h4>
-                          <p className="text-sm text-slate-600">{skill.projects} projects completed</p>
+                          <h4 className="font-medium text-white">{skill.skill}</h4>
+                          <p className="text-sm text-slate-400">{skill.projects} projects completed</p>
                         </div>
                       </div>
                       <div className="text-right">
                         <p className="font-bold text-green-600">${skill.earnings.toLocaleString()}</p>
-                        <p className="text-sm text-slate-600">${skill.avgRate}/hr avg</p>
+                        <p className="text-sm text-slate-400">${skill.avgRate}/hr avg</p>
                       </div>
                     </div>
                   ))}
@@ -325,9 +325,9 @@ export default function FreelancerAnalyticsPage() {
 
           <TabsContent value="projects" className="space-y-6">
             {/* Recent Projects */}
-            <Card>
+            <Card className="bg-slate-900 border-slate-800">
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
+                <CardTitle className="flex items-center space-x-2 text-white">
                   <Calendar className="w-5 h-5" />
                   <span>Recent Projects</span>
                 </CardTitle>
@@ -335,10 +335,10 @@ export default function FreelancerAnalyticsPage() {
               <CardContent>
                 <div className="space-y-4">
                   {recentProjects.map((project) => (
-                    <div key={project.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={project.id} className="flex items-center justify-between p-4 border border-slate-700 rounded-lg">
                       <div className="flex-1">
-                        <h4 className="font-medium text-slate-900">{project.title}</h4>
-                        <p className="text-sm text-slate-600">Client: {project.client}</p>
+                        <h4 className="font-medium text-white">{project.title}</h4>
+                        <p className="text-sm text-slate-400">Client: {project.client}</p>
                         {project.completedDate && (
                           <p className="text-xs text-slate-500">Completed: {project.completedDate}</p>
                         )}
@@ -352,7 +352,7 @@ export default function FreelancerAnalyticsPage() {
                           {project.rating && (
                             <div className="flex items-center space-x-1">
                               <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                              <span className="text-sm text-slate-600">{project.rating}</span>
+                              <span className="text-sm text-slate-400">{project.rating}</span>
                             </div>
                           )}
                         </div>

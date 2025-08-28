@@ -112,13 +112,13 @@ export default function ClientEscrowPage() {
   const disputedEscrows = escrowTransactions.filter(t => t.status === 'disputed').length
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Escrow Management</h1>
-            <p className="text-slate-600 mt-2">Secure payments and milestone tracking for your projects</p>
+            <h1 className="text-3xl font-bold text-white">Escrow Management</h1>
+            <p className="text-slate-400 mt-2">Secure payments and milestone tracking for your projects</p>
           </div>
           <Dialog open={isCreateEscrowOpen} onOpenChange={setIsCreateEscrowOpen}>
             <DialogTrigger asChild>
@@ -181,46 +181,46 @@ export default function ClientEscrowPage() {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-6">
               <div className="flex items-center space-x-2">
-                <Shield className="w-8 h-8 text-blue-500" />
+                <Shield className="w-8 h-8 text-blue-400" />
                 <div>
-                  <p className="text-2xl font-bold text-slate-900">${totalEscrowAmount.toLocaleString()}</p>
-                  <p className="text-sm text-slate-600">Total in Escrow</p>
+                  <p className="text-2xl font-bold text-white">${totalEscrowAmount.toLocaleString()}</p>
+                  <p className="text-sm text-slate-400">Total in Escrow</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-6">
               <div className="flex items-center space-x-2">
-                <Clock className="w-8 h-8 text-orange-500" />
+                <Clock className="w-8 h-8 text-orange-400" />
                 <div>
-                  <p className="text-2xl font-bold text-slate-900">{activeEscrows}</p>
-                  <p className="text-sm text-slate-600">Active Escrows</p>
+                  <p className="text-2xl font-bold text-white">{activeEscrows}</p>
+                  <p className="text-sm text-slate-400">Active Escrows</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-6">
               <div className="flex items-center space-x-2">
-                <CheckCircle className="w-8 h-8 text-green-500" />
+                <CheckCircle className="w-8 h-8 text-green-400" />
                 <div>
-                  <p className="text-2xl font-bold text-slate-900">{completedEscrows}</p>
-                  <p className="text-sm text-slate-600">Completed</p>
+                  <p className="text-2xl font-bold text-white">{completedEscrows}</p>
+                  <p className="text-sm text-slate-400">Completed</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-6">
               <div className="flex items-center space-x-2">
-                <AlertCircle className="w-8 h-8 text-red-500" />
+                <AlertCircle className="w-8 h-8 text-red-400" />
                 <div>
-                  <p className="text-2xl font-bold text-slate-900">{disputedEscrows}</p>
-                  <p className="text-sm text-slate-600">Disputed</p>
+                  <p className="text-2xl font-bold text-white">{disputedEscrows}</p>
+                  <p className="text-sm text-slate-400">Disputed</p>
                 </div>
               </div>
             </CardContent>
@@ -228,7 +228,7 @@ export default function ClientEscrowPage() {
         </div>
 
         {/* Search and Filters */}
-        <Card className="mb-6">
+        <Card className="mb-6 bg-slate-900 border-slate-800">
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="md:col-span-2">
@@ -260,7 +260,7 @@ export default function ClientEscrowPage() {
         {/* Escrow Transactions */}
         <div className="space-y-6">
           {filteredTransactions.map((transaction) => (
-            <Card key={transaction.id} className="hover:shadow-lg transition-shadow">
+            <Card key={transaction.id} className="hover:shadow-lg transition-shadow bg-slate-900 border-slate-800">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
@@ -268,9 +268,9 @@ export default function ClientEscrowPage() {
                       <Shield className="w-6 h-6 text-blue-600" />
                     </div>
                     <div>
-                      <CardTitle className="text-lg">{transaction.project}</CardTitle>
+                      <CardTitle className="text-lg text-white">{transaction.project}</CardTitle>
                       <div className="flex items-center space-x-2 mt-1">
-                        <span className="text-sm text-slate-600">ID: {transaction.id}</span>
+                        <span className="text-sm text-slate-400">ID: {transaction.id}</span>
                         <Badge className={getStatusColor(transaction.status)}>
                           {getStatusIcon(transaction.status)}
                           <span className="ml-1 capitalize">{transaction.status}</span>
@@ -292,27 +292,27 @@ export default function ClientEscrowPage() {
                       <AvatarFallback>{transaction.freelancer.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-medium text-slate-900">{transaction.freelancer}</p>
-                      <p className="text-sm text-slate-600">Freelancer</p>
+                      <p className="font-medium text-white">{transaction.freelancer}</p>
+                      <p className="text-sm text-slate-400">Freelancer</p>
                     </div>
                   </div>
                   <div>
-                    <p className="font-medium text-slate-900">{transaction.createdDate}</p>
-                    <p className="text-sm text-slate-600">Created Date</p>
+                    <p className="font-medium text-white">{transaction.createdDate}</p>
+                    <p className="text-sm text-slate-400">Created Date</p>
                   </div>
                   <div>
-                    <p className="font-medium text-slate-900">
+                    <p className="font-medium text-white">
                       {transaction.releaseDate || 'Pending'}
                     </p>
-                    <p className="text-sm text-slate-600">Release Date</p>
+                    <p className="text-sm text-slate-400">Release Date</p>
                   </div>
                 </div>
 
                 {/* Milestones */}
                 <div className="space-y-3">
-                  <h4 className="font-medium text-slate-900">Milestones</h4>
+                  <h4 className="font-medium text-white">Milestones</h4>
                   {transaction.milestones.map((milestone) => (
-                    <div key={milestone.id} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div key={milestone.id} className="flex items-center justify-between p-3 border border-slate-700 rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className={`w-3 h-3 rounded-full ${
                           milestone.status === 'completed' ? 'bg-green-500' :
@@ -321,8 +321,8 @@ export default function ClientEscrowPage() {
                           'bg-slate-300'
                         }`}></div>
                         <div>
-                          <p className="font-medium text-slate-900">{milestone.title}</p>
-                          <p className="text-sm text-slate-600">
+                          <p className="font-medium text-white">{milestone.title}</p>
+                          <p className="text-sm text-slate-400">
                             {milestone.releaseDate ? `Released: ${milestone.releaseDate}` : 'Pending release'}
                           </p>
                         </div>
@@ -368,11 +368,11 @@ export default function ClientEscrowPage() {
         </div>
 
         {filteredTransactions.length === 0 && (
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardContent className="p-12 text-center">
-              <Shield className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-slate-900 mb-2">No escrow transactions found</h3>
-              <p className="text-slate-600 mb-4">
+              <Shield className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-white mb-2">No escrow transactions found</h3>
+              <p className="text-slate-400 mb-4">
                 {searchTerm || statusFilter !== 'all' 
                   ? 'Try adjusting your search or filter criteria.'
                   : 'Create your first escrow to secure payments for your projects.'}
