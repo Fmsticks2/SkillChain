@@ -60,37 +60,107 @@ The platform is built on Citrea, a ZK-rollup for Bitcoin that is fully EVM compa
 - Decentralized skill certification partnerships
 - AI-powered talent matching
 
+## 📁 Project Structure
+
+```
+SkillChain/
+├── 📱 app/                          # Next.js App Router pages
+│   ├── admin/                       # Admin dashboard
+│   ├── analytics/                   # Analytics and reporting
+│   ├── api/                         # API routes
+│   │   ├── auth/                    # Authentication endpoints
+│   │   └── ws/                      # WebSocket handlers
+│   ├── auth/                        # Authentication pages
+│   │   ├── signin/                  # Sign-in page
+│   │   └── signup/                  # Sign-up page
+│   ├── dashboard/                   # User dashboards
+│   │   ├── client/                  # Client-specific dashboard pages
+│   │   └── freelancer/              # Freelancer-specific dashboard pages
+│   ├── contracts/                   # Smart contract interaction page
+│   ├── wallet/                      # Wallet integration page
+│   └── [other pages]/               # Various application pages
+├── 🔧 components/                   # React components
+│   ├── auth/                        # Authentication components
+│   ├── payments/                    # Payment interface components
+│   ├── ui/                          # Reusable UI components (shadcn/ui)
+│   ├── client-dashboard.tsx         # Client dashboard component
+│   ├── freelancer-dashboard.tsx     # Freelancer dashboard component
+│   └── wallet-integration.tsx       # Wallet integration component
+├── 📜 contracts/                    # Smart contracts (Solidity)
+│   ├── core/                        # Core platform contracts
+│   │   ├── SkillPlatform.sol        # Main platform contract
+│   │   └── UserRegistry.sol         # User management contract
+│   ├── escrow/                      # Escrow system contracts
+│   │   └── ProjectEscrow.sol        # Project escrow contract
+│   ├── tokens/                      # Token contracts
+│   │   └── SkillToken.sol           # Platform token contract
+│   └── scripts/                     # Deployment scripts
+├── 🎣 hooks/                        # Custom React hooks
+│   ├── use-citrea-payments.ts       # Citrea payment integration
+│   ├── use-ethereum.ts              # Ethereum wallet integration
+│   └── use-toast.ts                 # Toast notifications
+├── 📚 lib/                          # Utility libraries
+│   ├── auth.ts                      # Authentication utilities
+│   ├── contract-integration.ts      # Smart contract integration
+│   ├── web3auth-config.ts           # Web3 authentication config
+│   └── utils.ts                     # General utilities
+├── 🏗️ artifacts/                    # Compiled contract artifacts
+│   └── contracts/                   # Generated contract ABIs
+├── 📖 docs/                         # Documentation
+│   ├── contract-integration-guide.md
+│   ├── deployment-readme.md
+│   └── frontend-deployment-guide.md
+├── 🎨 public/                       # Static assets
+├── 🔧 scripts/                      # Build and deployment scripts
+├── 🎭 types/                        # TypeScript type definitions
+└── ⚙️ Configuration files           # Various config files
+    ├── hardhat.config.js            # Hardhat configuration
+    ├── next.config.mjs              # Next.js configuration
+    ├── tailwind.config.ts           # Tailwind CSS configuration
+    └── tsconfig.json                # TypeScript configuration
+```
+
 ## 🚦 Getting Started
 
 ### 📋 Prerequisites
 
-- Node.js and npm/yarn
+- Node.js 18+ and npm/yarn/pnpm
 - MetaMask or other Web3 wallet
 - Citrea testnet tokens for testing
+- Hardhat for smart contract development
 
 ### 🔧 Installation
 
 1. Clone the repository
    ```bash
    git clone https://github.com/Fmsticks2/SkillChain
-   cd skillchain
+   cd SkillChain
    ```
 
 2. Install dependencies
    ```bash
    npm install
+   # or
+   pnpm install
    ```
 
-3. Configure environment variables
+3. Compile smart contracts
+   ```bash
+   npx hardhat compile
+   ```
+
+4. Configure environment variables
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
-4. Run the development server
+5. Run the development server
    ```bash
    npm run dev
    ```
+
+6. Access the application at `http://localhost:3000`
 
 ## 📚 Documentation
 
