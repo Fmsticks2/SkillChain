@@ -23,6 +23,17 @@ export default function FreelancerMessagesPage() {
   const [newMessage, setNewMessage] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
 
+  const formatTime = (timestamp: string) => {
+    return new Date(timestamp).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+
+  const getMessageAlignment = (senderId: string) => {
+    return senderId === 'freelancer' ? 'justify-end' : 'justify-start'
+  }
+
   const conversations = [
     {
       id: '1',
@@ -70,7 +81,7 @@ export default function FreelancerMessagesPage() {
     }
   ]
 
-  const messages = {
+  const messages: Record<string, Array<{id: string, sender: string, content: string, timestamp: string, read: boolean}>> = {
     '1': [
       {
         id: '1',
@@ -275,7 +286,7 @@ export default function FreelancerMessagesPage() {
                 {/* Messages */}
                 <CardContent className="flex-1 p-4 overflow-y-auto">
                   <div className="space-y-4">
-                    {currentMessages.map((message) => (
+                    {currentMessages.map((message: {id: string, sender: string, content: string, timestamp: string, read: boolean}) => (
                       <div
                         key={message.id}
                         className={`flex ${message.sender === 'freelancer' ? 'justify-end' : 'justify-start'}`}

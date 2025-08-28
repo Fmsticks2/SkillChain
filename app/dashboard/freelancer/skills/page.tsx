@@ -91,7 +91,7 @@ export default function FreelancerSkillsPage() {
     'DevOps'
   ]
 
-  const getLevelText = (level) => {
+  const getLevelText = (level: number) => {
     switch(level) {
       case 1: return 'Beginner'
       case 2: return 'Basic'
@@ -102,7 +102,7 @@ export default function FreelancerSkillsPage() {
     }
   }
 
-  const getLevelColor = (level) => {
+  const getLevelColor = (level: number) => {
     switch(level) {
       case 1: return 'bg-red-100 text-red-700'
       case 2: return 'bg-orange-100 text-orange-700'

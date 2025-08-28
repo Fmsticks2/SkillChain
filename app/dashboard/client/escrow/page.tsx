@@ -77,7 +77,7 @@ export default function ClientEscrowPage() {
     }
   ]
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch(status) {
       case 'active': return 'bg-blue-100 text-blue-700'
       case 'completed': return 'bg-green-100 text-green-700'
@@ -88,7 +88,7 @@ export default function ClientEscrowPage() {
     }
   }
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status: string) => {
     switch(status) {
       case 'active': return <Clock className="w-4 h-4" />
       case 'completed': return <CheckCircle className="w-4 h-4" />

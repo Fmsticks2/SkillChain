@@ -85,7 +85,7 @@ export default function FreelancerAnalyticsPage() {
     }
   ]
 
-  const getChangeIcon = (change) => {
+  const getChangeIcon = (change: number) => {
     return change >= 0 ? (
       <TrendingUp className="w-4 h-4 text-green-500" />
     ) : (
@@ -93,8 +93,23 @@ export default function FreelancerAnalyticsPage() {
     )
   }
 
-  const getChangeColor = (change) => {
+  const getChangeColor = (change: number) => {
     return change >= 0 ? 'text-green-600' : 'text-red-600'
+  }
+
+  const getSkillColor = (index: number) => {
+    const colors = [
+      'bg-blue-100 text-blue-700',
+      'bg-green-100 text-green-700',
+      'bg-purple-100 text-purple-700',
+      'bg-orange-100 text-orange-700',
+      'bg-pink-100 text-pink-700'
+    ]
+    return colors[index % colors.length]
+  }
+
+  const getProjectStatusColor = (status: string) => {
+    return status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
   }
 
   return (

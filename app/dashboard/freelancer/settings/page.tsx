@@ -59,15 +59,15 @@ export default function FreelancerSettingsPage() {
     languages: ['English', 'Spanish']
   })
 
-  const handleNotificationChange = (key, value) => {
+  const handleNotificationChange = (key: string, value: boolean) => {
     setNotifications(prev => ({ ...prev, [key]: value }))
   }
 
-  const handlePrivacyChange = (key, value) => {
+  const handlePrivacyChange = (key: string, value: boolean) => {
     setPrivacy(prev => ({ ...prev, [key]: value }))
   }
 
-  const handleProfileChange = (key, value) => {
+  const handleProfileChange = (key: string, value: string) => {
     setProfile(prev => ({ ...prev, [key]: value }))
   }
 
