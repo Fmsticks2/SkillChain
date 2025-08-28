@@ -66,10 +66,35 @@ export function SettingsPage() {
                       Upload a professional photo to build trust with clients
                     </p>
                     <div className="flex space-x-2">
-                      <Button size="sm" variant="outline" className="border-slate-700 bg-transparent">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="border-slate-700 bg-transparent"
+                        onClick={() => {
+                          const input = document.createElement('input');
+                          input.type = 'file';
+                          input.accept = 'image/*';
+                          input.onchange = (e) => {
+                            const file = (e.target as HTMLInputElement).files?.[0];
+                            if (file) {
+                              console.log('File selected:', file.name);
+                              // Handle file upload logic here
+                            }
+                          };
+                          input.click();
+                        }}
+                      >
                         Upload New
                       </Button>
-                      <Button size="sm" variant="ghost" className="text-red-400 hover:text-red-300">
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        className="text-red-400 hover:text-red-300"
+                        onClick={() => {
+                          console.log('Remove photo clicked');
+                          // Handle photo removal logic here
+                        }}
+                      >
                         Remove
                       </Button>
                     </div>
@@ -120,7 +145,14 @@ export function SettingsPage() {
                 </div>
 
                 <div className="flex justify-end mt-6">
-                  <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                  <Button 
+                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                    onClick={() => {
+                      console.log('Saving profile changes...');
+                      // Handle profile save logic here
+                      alert('Profile changes saved successfully!');
+                    }}
+                  >
                     <Save className="w-4 h-4 mr-2" />
                     Save Changes
                   </Button>
@@ -193,7 +225,14 @@ export function SettingsPage() {
                 </div>
 
                 <div className="flex justify-end mt-6">
-                  <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                  <Button 
+                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                    onClick={() => {
+                      console.log('Saving notification preferences...', notifications);
+                      // Handle notification preferences save logic here
+                      alert('Notification preferences saved successfully!');
+                    }}
+                  >
                     <Save className="w-4 h-4 mr-2" />
                     Save Preferences
                   </Button>
@@ -238,7 +277,14 @@ export function SettingsPage() {
                         <Input id="confirmPassword" type="password" className="bg-slate-800 border-slate-700" />
                       </div>
                     </div>
-                    <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                    <Button 
+                      className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                      onClick={() => {
+                        console.log('Updating password...');
+                        // Handle password update logic here
+                        alert('Password updated successfully!');
+                      }}
+                    >
                       Update Password
                     </Button>
                   </div>
@@ -253,7 +299,15 @@ export function SettingsPage() {
                         <p className="font-medium">Authenticator App</p>
                         <p className="text-slate-400 text-sm">Use an app like Google Authenticator</p>
                       </div>
-                      <Button variant="outline" className="border-slate-700 bg-transparent">
+                      <Button 
+                        variant="outline" 
+                        className="border-slate-700 bg-transparent"
+                        onClick={() => {
+                          console.log('Enabling 2FA...');
+                          // Handle 2FA enable logic here
+                          alert('Two-factor authentication setup initiated!');
+                        }}
+                      >
                         Enable
                       </Button>
                     </div>
@@ -272,11 +326,28 @@ export function SettingsPage() {
                           <p className="text-slate-400 text-sm">0x742d...4C4C</p>
                         </div>
                       </div>
-                      <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="text-red-400 hover:text-red-300"
+                        onClick={() => {
+                          console.log('Disconnecting wallet...');
+                          // Handle wallet disconnect logic here
+                          alert('Wallet disconnected successfully!');
+                        }}
+                      >
                         Disconnect
                       </Button>
                     </div>
-                    <Button variant="outline" className="w-full border-slate-700 bg-transparent">
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-slate-700 bg-transparent"
+                      onClick={() => {
+                        console.log('Connecting new wallet...');
+                        // Handle wallet connection logic here
+                        alert('Wallet connection initiated!');
+                      }}
+                    >
                       <Wallet className="w-4 h-4 mr-2" />
                       Connect New Wallet
                     </Button>
@@ -305,7 +376,16 @@ export function SettingsPage() {
                           <p className="text-slate-400 text-sm">{session.location}</p>
                         </div>
                         {!session.current && (
-                          <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="text-red-400 hover:text-red-300"
+                            onClick={() => {
+                              console.log('Revoking session for:', session.device);
+                              // Handle session revoke logic here
+                              alert(`Session revoked for ${session.device}`);
+                            }}
+                          >
                             Revoke
                           </Button>
                         )}
@@ -352,15 +432,42 @@ export function SettingsPage() {
                         </div>
                       </div>
                       <div className="flex space-x-2">
-                        <Button variant="ghost" size="sm">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => {
+                            console.log('Editing payment method...');
+                            // Handle payment method edit logic here
+                            alert('Payment method edit initiated!');
+                          }}
+                        >
                           Edit
                         </Button>
-                        <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="text-red-400 hover:text-red-300"
+                          onClick={() => {
+                            console.log('Removing payment method...');
+                            // Handle payment method removal logic here
+                            if (confirm('Are you sure you want to remove this payment method?')) {
+                              alert('Payment method removed successfully!');
+                            }
+                          }}
+                        >
                           Remove
                         </Button>
                       </div>
                     </div>
-                    <Button variant="outline" className="w-full border-slate-700 bg-transparent">
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-slate-700 bg-transparent"
+                      onClick={() => {
+                        console.log('Adding new payment method...');
+                        // Handle add payment method logic here
+                        alert('Add payment method dialog would open here!');
+                      }}
+                    >
                       Add Payment Method
                     </Button>
                   </div>

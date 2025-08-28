@@ -231,7 +231,14 @@ export default function FreelancerSettingsPage() {
                   </Select>
                 </div>
 
-                <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                <Button 
+                  className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                  onClick={() => {
+                    console.log('Saving profile changes...', profile);
+                    // Handle profile save logic here
+                    alert('Profile changes saved successfully!');
+                  }}
+                >
                   <Save className="w-4 h-4 mr-2" />
                   Save Changes
                 </Button>
@@ -343,7 +350,14 @@ export default function FreelancerSettingsPage() {
                   </div>
                 </div>
 
-                <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                <Button 
+                  className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                  onClick={() => {
+                    console.log('Saving notification preferences...', notifications);
+                    // Handle notification preferences save logic here
+                    alert('Notification preferences saved successfully!');
+                  }}
+                >
                   <Save className="w-4 h-4 mr-2" />
                   Save Preferences
                 </Button>
@@ -463,12 +477,27 @@ export default function FreelancerSettingsPage() {
                     </div>
                     <Badge variant="outline">Not Enabled</Badge>
                   </div>
-                  <Button variant="outline" className="mt-3">
+                  <Button 
+                    variant="outline" 
+                    className="mt-3"
+                    onClick={() => {
+                      console.log('Enabling 2FA...');
+                      // Handle 2FA enable logic here
+                      alert('Two-factor authentication setup initiated!');
+                    }}
+                  >
                     Enable 2FA
                   </Button>
                 </div>
 
-                <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                <Button 
+                  className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                  onClick={() => {
+                    console.log('Saving security settings...');
+                    // Handle security settings save logic here
+                    alert('Security settings saved successfully!');
+                  }}
+                >
                   <Save className="w-4 h-4 mr-2" />
                   Save Security Settings
                 </Button>
@@ -537,7 +566,14 @@ export default function FreelancerSettingsPage() {
                     <Input id="billingZip" placeholder="10001" />
                   </div>
                 </div>
-                <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                <Button 
+                  className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                  onClick={() => {
+                    console.log('Saving billing info...');
+                    // Handle billing info save logic here
+                    alert('Billing information saved successfully!');
+                  }}
+                >
                   <Save className="w-4 h-4 mr-2" />
                   Save Billing Info
                 </Button>

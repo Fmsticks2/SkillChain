@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/components/ui/use-toast"
+import { useCitreaPayments } from "@/hooks/use-citrea-payments"
+import { useEthereum } from "@/hooks/use-ethereum"
 import {
   Wallet,
   Send,
@@ -44,108 +46,7 @@ interface PaymentInterfaceProps {
   }
 }
 
-interface Payment {
-  id: string
-  type: 'sent' | 'received'
-  amount: number
-  token: 'BTC' | 'USDC' | 'SKILL'
-  counterparty: string
-  status: 'pending' | 'completed' | 'failed' | 'refunded'
-  timestamp: string
-  txHash?: string
-  metadata?: string
-}
-
-interface Withdrawal {
-  id: string
-  amount: number
-  token: 'BTC' | 'USDC' | 'SKILL'
-  destinationAddress: string
-  status: 'pending' | 'processing' | 'completed' | 'failed'
-  requestedAt: string
-  processedAt?: string
-}
-
-interface MilestoneEscrow {
-  id: string
-  projectId: string
-  projectName: string
-  totalAmount: number
-  releasedAmount: number
-  token: 'BTC' | 'USDC' | 'SKILL'
-  milestones: {
-    amount: number
-    description: string
-    completed: boolean
-  }[]
-  client: string
-  freelancer: string
-  isActive: boolean
-}
-
-const mockPayments: Payment[] = [
-  {
-    id: '1',
-    type: 'received',
-    amount: 2500,
-    token: 'USDC',
-    counterparty: '0x1234...5678',
-    status: 'completed',
-    timestamp: '2 hours ago',
-    txHash: '0xabcd...efgh',
-    metadata: 'Project payment for DeFi Dashboard'
-  },
-  {
-    id: '2',
-    type: 'sent',
-    amount: 0.05,
-    token: 'BTC',
-    counterparty: '0x2345...6789',
-    status: 'pending',
-    timestamp: '1 day ago',
-    metadata: 'Payment for smart contract audit'
-  }
-]
-
-const mockWithdrawals: Withdrawal[] = [
-  {
-    id: '1',
-    amount: 0.1,
-    token: 'BTC',
-    destinationAddress: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
-    status: 'completed',
-    requestedAt: '3 days ago',
-    processedAt: '2 days ago'
-  },
-  {
-    id: '2',
-    amount: 1000,
-    token: 'USDC',
-    destinationAddress: '0x742d35Cc6634C0532925a3b8D4C9db96DfbF3b6C',
-    status: 'processing',
-    requestedAt: '1 day ago'
-  }
-]
-
-const mockEscrows: MilestoneEscrow[] = [
-  {
-    id: '1',
-    projectId: 'proj_001',
-    projectName: 'DeFi Dashboard Redesign',
-    totalAmount: 8500,
-    releasedAmount: 6375,
-    token: 'USDC',
-    milestones: [
-      { amount: 2125, description: 'UI/UX Design', completed: true },
-      { amount: 2125, description: 'Frontend Development', completed: true },
-      { amount: 2125, description: 'Backend Integration', completed: true },
-      { amount: 2125, description: 'Testing & Deployment', completed: false }
-    ],
-    client: '0x1234...5678',
-    freelancer: '0x9876...5432',
-    isActive: true
-  }
-]
+// Using interfaces from the useCitreaPayments hook
 
 const supportedTokens = [
   { symbol: 'BTC', name: 'Bitcoin', icon: Bitcoin },
@@ -155,11 +56,21 @@ const supportedTokens = [
 
 export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceProps) {
   const [activeTab, setActiveTab] = useState('overview')
-  const [payments, setPayments] = useState<Payment[]>(mockPayments)
-  const [withdrawals, setWithdrawals] = useState<Withdrawal[]>(mockWithdrawals)
-  const [escrows, setEscrows] = useState<MilestoneEscrow[]>(mockEscrows)
-  const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
+  const { currentAccount } = useEthereum()
+  const {
+    isLoading,
+    error,
+    userBalance: cryptoBalance,
+    payments,
+    withdrawals,
+    escrows,
+    createPayment,
+    requestWithdrawal,
+    createMilestoneEscrow,
+    refreshData,
+    isContractReady
+  } = useCitreaPayments()
 
   // Payment form state
   const [paymentForm, setPaymentForm] = useState({
@@ -185,23 +96,23 @@ export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceP
   })
 
   const handleSendPayment = async () => {
-    setIsLoading(true)
+    if (!currentAccount) {
+      toast({
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet to send payments.",
+        variant: "destructive"
+      })
+      return
+    }
+
     try {
-      // Simulate API call to create payment
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      await createPayment(
+        paymentForm.recipient,
+        paymentForm.amount,
+        paymentForm.token as 'BTC' | 'USDC' | 'SKILL',
+        paymentForm.metadata
+      )
       
-      const newPayment: Payment = {
-        id: Date.now().toString(),
-        type: 'sent',
-        amount: parseFloat(paymentForm.amount),
-        token: paymentForm.token as 'BTC' | 'USDC' | 'SKILL',
-        counterparty: paymentForm.recipient,
-        status: 'pending',
-        timestamp: 'Just now',
-        metadata: paymentForm.metadata
-      }
-      
-      setPayments(prev => [newPayment, ...prev])
       setPaymentForm({ recipient: '', amount: '', token: 'USDC', metadata: '' })
       
       toast({
@@ -209,32 +120,32 @@ export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceP
         description: "Your payment has been submitted and is being processed."
       })
     } catch (error) {
+      console.error('Payment error:', error)
       toast({
         title: "Payment Failed",
         description: "There was an error processing your payment.",
         variant: "destructive"
       })
-    } finally {
-      setIsLoading(false)
     }
   }
 
   const handleRequestWithdrawal = async () => {
-    setIsLoading(true)
+    if (!currentAccount) {
+      toast({
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet to request withdrawals.",
+        variant: "destructive"
+      })
+      return
+    }
+
     try {
-      // Simulate API call to request withdrawal
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      await requestWithdrawal(
+        withdrawalForm.amount,
+        withdrawalForm.token as 'BTC' | 'USDC' | 'SKILL',
+        withdrawalForm.destinationAddress
+      )
       
-      const newWithdrawal: Withdrawal = {
-        id: Date.now().toString(),
-        amount: parseFloat(withdrawalForm.amount),
-        token: withdrawalForm.token as 'BTC' | 'USDC' | 'SKILL',
-        destinationAddress: withdrawalForm.destinationAddress,
-        status: 'pending',
-        requestedAt: 'Just now'
-      }
-      
-      setWithdrawals(prev => [newWithdrawal, ...prev])
       setWithdrawalForm({ amount: '', token: 'BTC', destinationAddress: '' })
       
       toast({
@@ -242,44 +153,35 @@ export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceP
         description: "Your withdrawal request has been submitted for processing."
       })
     } catch (error) {
+      console.error('Withdrawal error:', error)
       toast({
         title: "Withdrawal Failed",
         description: "There was an error processing your withdrawal request.",
         variant: "destructive"
       })
-    } finally {
-      setIsLoading(false)
     }
   }
 
   const handleCreateEscrow = async () => {
-    setIsLoading(true)
+    if (!isContractReady || !currentAccount) {
+      toast({
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet to create an escrow.",
+        variant: "destructive"
+      })
+      return
+    }
+
     try {
-      // Simulate API call to create escrow
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      const milestoneAmounts = escrowForm.milestones.map(m => m.amount || '0')
       
-      const totalAmount = escrowForm.milestones.reduce((sum, milestone) => 
-        sum + parseFloat(milestone.amount || '0'), 0
-      )
+      await createMilestoneEscrow(
+         escrowForm.projectId,
+         escrowForm.freelancer,
+         milestoneAmounts,
+         escrowForm.token as 'BTC' | 'USDC' | 'SKILL'
+       )
       
-      const newEscrow: MilestoneEscrow = {
-        id: Date.now().toString(),
-        projectId: escrowForm.projectId,
-        projectName: `Project ${escrowForm.projectId}`,
-        totalAmount,
-        releasedAmount: 0,
-        token: escrowForm.token as 'BTC' | 'USDC' | 'SKILL',
-        milestones: escrowForm.milestones.map(m => ({
-          amount: parseFloat(m.amount),
-          description: m.description,
-          completed: false
-        })),
-        client: userAddress || '0x0000...0000',
-        freelancer: escrowForm.freelancer,
-        isActive: true
-      }
-      
-      setEscrows(prev => [newEscrow, ...prev])
       setEscrowForm({
         projectId: '',
         freelancer: '',
@@ -292,13 +194,12 @@ export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceP
         description: "Milestone-based escrow has been created successfully."
       })
     } catch (error) {
+      console.error('Escrow creation error:', error)
       toast({
         title: "Escrow Creation Failed",
         description: "There was an error creating the escrow.",
         variant: "destructive"
       })
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -359,12 +260,40 @@ export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceP
     }
   }
 
+  // Show connection prompt if wallet is not connected
+  if (!currentAccount) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-white p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">Payment Center</h1>
+            <p className="text-slate-400">Manage your payments, withdrawals, and escrow contracts on Citrea network</p>
+          </div>
+          <Card className="bg-slate-900 border-slate-800">
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <Wallet className="h-16 w-16 text-slate-400 mb-4" />
+              <h3 className="text-xl font-semibold text-white mb-2">Connect Your Wallet</h3>
+              <p className="text-slate-400 text-center mb-6">
+                Please connect your wallet to access the payment center and manage your crypto transactions.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Payment Center</h1>
           <p className="text-slate-400">Manage your payments, withdrawals, and escrow contracts on Citrea network</p>
+          {error && (
+            <div className="mt-4 p-4 bg-red-900/20 border border-red-800 rounded-lg">
+              <p className="text-red-400">{error}</p>
+            </div>
+          )}
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -380,7 +309,7 @@ export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceP
             {/* Balance Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {supportedTokens.map((token) => {
-                const balance = userBalance?.[token.symbol.toLowerCase() as keyof typeof userBalance] || 0
+                const balance = cryptoBalance?.[token.symbol.toLowerCase() as keyof typeof cryptoBalance] || '0'
                 const Icon = token.icon
                 return (
                   <Card key={token.symbol} className="bg-slate-900 border-slate-800">
@@ -390,7 +319,7 @@ export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceP
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold text-white">
-                        {balance.toLocaleString()} {token.symbol}
+                        {parseFloat(balance).toLocaleString(undefined, { maximumFractionDigits: 6 })} {token.symbol}
                       </div>
                       <p className="text-xs text-slate-400 mt-1">
                         Available for withdrawal
@@ -411,34 +340,40 @@ export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceP
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {payments.slice(0, 5).map((payment) => (
-                    <div key={payment.id} className="flex items-center justify-between p-4 bg-slate-800 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        {payment.type === 'sent' ? (
-                          <ArrowUpRight className="h-5 w-5 text-red-400" />
-                        ) : (
-                          <ArrowDownLeft className="h-5 w-5 text-green-400" />
-                        )}
-                        <div>
+                  {payments.slice(0, 5).map((payment) => {
+                    const isReceived = payment.payee === currentAccount
+                    const counterparty = isReceived ? payment.payer : payment.payee
+                    const formattedDate = new Date(payment.createdAt * 1000).toLocaleDateString()
+                    
+                    return (
+                      <div key={payment.id} className="flex items-center justify-between p-4 bg-slate-800 rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          {isReceived ? (
+                            <ArrowDownLeft className="h-5 w-5 text-green-400" />
+                          ) : (
+                            <ArrowUpRight className="h-5 w-5 text-red-400" />
+                          )}
+                          <div>
+                            <p className="text-white font-medium">
+                              {isReceived ? 'Received from' : 'Sent to'} {counterparty.slice(0, 6)}...{counterparty.slice(-4)}
+                            </p>
+                            <p className="text-slate-400 text-sm">{formattedDate}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
                           <p className="text-white font-medium">
-                            {payment.type === 'sent' ? 'Sent to' : 'Received from'} {payment.counterparty}
+                            {parseFloat(payment.amount).toLocaleString(undefined, { maximumFractionDigits: 6 })} {payment.token}
                           </p>
-                          <p className="text-slate-400 text-sm">{payment.timestamp}</p>
+                          <div className="flex items-center space-x-2">
+                            {getStatusIcon(payment.status)}
+                            <Badge className={getStatusColor(payment.status)}>
+                              {payment.status}
+                            </Badge>
+                          </div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-white font-medium">
-                          {payment.amount} {payment.token}
-                        </p>
-                        <div className="flex items-center space-x-2">
-                          {getStatusIcon(payment.status)}
-                          <Badge className={getStatusColor(payment.status)}>
-                            {payment.status}
-                          </Badge>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -511,7 +446,7 @@ export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceP
                   ) : (
                     <Send className="h-4 w-4 mr-2" />
                   )}
-                  Send Payment
+                  {isLoading ? 'Processing...' : 'Send Payment'}
                 </Button>
               </CardContent>
             </Card>
@@ -574,7 +509,7 @@ export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceP
                     ) : (
                       <Download className="h-4 w-4 mr-2" />
                     )}
-                    Request Withdrawal
+                    {isLoading ? 'Processing...' : 'Request Withdrawal'}
                   </Button>
                 </CardContent>
               </Card>
@@ -749,14 +684,14 @@ export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceP
                 <CardContent>
                   <div className="space-y-4">
                     {escrows.filter(escrow => escrow.isActive).map((escrow) => {
-                      const progress = (escrow.releasedAmount / escrow.totalAmount) * 100
-                      const completedMilestones = escrow.milestones.filter(m => m.completed).length
+                      const progress = (parseFloat(escrow.releasedAmount) / parseFloat(escrow.totalAmount)) * 100
+                      const completedMilestones = 0 // Milestone details not available in current interface
                       
                       return (
                         <div key={escrow.id} className="p-4 bg-slate-800 rounded-lg">
                           <div className="flex items-center justify-between mb-3">
                             <div>
-                              <h4 className="text-white font-medium">{escrow.projectName}</h4>
+                              <h4 className="text-white font-medium">Project #{escrow.projectId}</h4>
                               <p className="text-slate-400 text-sm">ID: {escrow.projectId}</p>
                             </div>
                             <Badge className="bg-green-100 text-green-800 border-green-200">
@@ -768,7 +703,7 @@ export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceP
                             <div className="flex justify-between text-sm mb-1">
                               <span className="text-slate-400">Progress</span>
                               <span className="text-white">
-                                {completedMilestones}/{escrow.milestones.length} milestones
+                                Released: {parseFloat(escrow.releasedAmount).toLocaleString(undefined, { maximumFractionDigits: 6 })} / {parseFloat(escrow.totalAmount).toLocaleString(undefined, { maximumFractionDigits: 6 })}
                               </span>
                             </div>
                             <Progress value={progress} className="h-2" />
@@ -781,24 +716,10 @@ export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceP
                             </span>
                           </div>
                           
-                          <div className="mt-3 space-y-2">
-                            {escrow.milestones.map((milestone, index) => (
-                              <div key={index} className="flex items-center justify-between text-sm">
-                                <div className="flex items-center space-x-2">
-                                  {milestone.completed ? (
-                                    <CheckCircle className="h-4 w-4 text-green-500" />
-                                  ) : (
-                                    <Clock className="h-4 w-4 text-slate-400" />
-                                  )}
-                                  <span className={milestone.completed ? 'text-green-400' : 'text-slate-400'}>
-                                    {milestone.description}
-                                  </span>
-                                </div>
-                                <span className={milestone.completed ? 'text-green-400' : 'text-slate-400'}>
-                                  {milestone.amount} {escrow.token}
-                                </span>
-                              </div>
-                            ))}
+                          <div className="mt-3">
+                            <div className="text-sm text-slate-400">
+                              Milestone details not available in current interface
+                            </div>
                           </div>
                         </div>
                       )
@@ -819,56 +740,53 @@ export function PaymentInterface({ userAddress, userBalance }: PaymentInterfaceP
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {payments.map((payment) => (
-                    <div key={payment.id} className="flex items-center justify-between p-4 bg-slate-800 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        {payment.type === 'sent' ? (
-                          <ArrowUpRight className="h-5 w-5 text-red-400" />
-                        ) : (
-                          <ArrowDownLeft className="h-5 w-5 text-green-400" />
-                        )}
-                        <div>
-                          <p className="text-white font-medium">
-                            {payment.type === 'sent' ? 'Sent to' : 'Received from'} {payment.counterparty}
-                          </p>
-                          <p className="text-slate-400 text-sm">{payment.timestamp}</p>
-                          {payment.metadata && (
-                            <p className="text-slate-500 text-sm">{payment.metadata}</p>
+                  {payments.map((payment) => {
+                    const isReceived = payment.payee === currentAccount
+                    const counterparty = isReceived ? payment.payer : payment.payee
+                    const formattedDate = new Date(payment.createdAt * 1000).toLocaleDateString()
+                    
+                    return (
+                      <div key={payment.id} className="flex items-center justify-between p-4 bg-slate-800 rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          {isReceived ? (
+                            <ArrowDownLeft className="h-5 w-5 text-green-400" />
+                          ) : (
+                            <ArrowUpRight className="h-5 w-5 text-red-400" />
                           )}
+                          <div>
+                            <p className="text-white font-medium">
+                              {isReceived ? 'Received from' : 'Sent to'} {counterparty.slice(0, 6)}...{counterparty.slice(-4)}
+                            </p>
+                            <p className="text-slate-400 text-sm">{formattedDate}</p>
+                            {payment.metadata && (
+                              <p className="text-slate-500 text-sm">{payment.metadata}</p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-white font-medium">
-                          {payment.amount} {payment.token}
-                        </p>
-                        <div className="flex items-center space-x-2">
-                          {getStatusIcon(payment.status)}
-                          <Badge className={getStatusColor(payment.status)}>
-                            {payment.status}
-                          </Badge>
-                        </div>
-                        {payment.txHash && (
+                        <div className="text-right">
+                          <p className="text-white font-medium">
+                            {parseFloat(payment.amount).toLocaleString(undefined, { maximumFractionDigits: 6 })} {payment.token}
+                          </p>
+                          <div className="flex items-center space-x-2">
+                            {getStatusIcon(payment.status)}
+                            <Badge className={getStatusColor(payment.status)}>
+                              {payment.status}
+                            </Badge>
+                          </div>
                           <div className="flex items-center space-x-1 mt-1">
                             <Button
                               variant="ghost"
                               size="sm"
                               className="h-6 px-2 text-slate-400 hover:text-white"
-                              onClick={() => navigator.clipboard.writeText(payment.txHash!)}
+                              onClick={() => navigator.clipboard.writeText(payment.id)}
                             >
                               <Copy className="h-3 w-3" />
                             </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 px-2 text-slate-400 hover:text-white"
-                            >
-                              <ExternalLink className="h-3 w-3" />
-                            </Button>
                           </div>
-                        )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </CardContent>
             </Card>

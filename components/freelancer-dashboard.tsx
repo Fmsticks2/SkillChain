@@ -29,6 +29,7 @@ import {
   LogOut,
   Briefcase,
   BarChart3,
+  Wallet,
 } from "lucide-react"
 import {
   Sidebar,
@@ -176,6 +177,14 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
+            <Link href="/wallet">
+              <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
+                <Wallet className="w-5 h-5" />
+                Crypto Wallet
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
             <Link href="/dashboard/freelancer/settings">
               <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
                 <Settings className="w-5 h-5" />
@@ -272,14 +281,25 @@ export function FreelancerDashboard() {
                     <div>
                       <p className="text-slate-400 text-sm">Total Earnings</p>
                       <p className="text-2xl font-bold text-blue-400">$47,320</p>
+                      <p className="text-xs text-slate-500 mt-1">≈ 2.1 BTC • 15,400 USDC</p>
                     </div>
                     <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
                       <DollarSign className="w-6 h-6 text-white" />
                     </div>
                   </div>
-                  <div className="mt-4 flex items-center text-emerald-400 text-sm">
-                    <ArrowUpRight className="w-4 h-4 mr-1" />
-                    +12% this month
+                  <div className="mt-4 flex items-center justify-between">
+                    <div className="flex items-center text-emerald-400 text-sm">
+                      <ArrowUpRight className="w-4 h-4 mr-1" />
+                      +12% this month
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-blue-400 hover:text-blue-300"
+                      onClick={() => router.push('/wallet')}
+                    >
+                      Manage Crypto
+                    </Button>
                   </div>
                 </Card>
               </motion.div>

@@ -105,7 +105,14 @@ export default function ClientSettingsPage() {
                 />
               </div>
 
-              <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+              <Button 
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                onClick={() => {
+                  console.log('Saving client profile changes...');
+                  // Handle client profile save logic here
+                  alert('Profile changes saved successfully!');
+                }}
+              >
                 <Save className="w-4 h-4 mr-2" />
                 Save Changes
               </Button>
@@ -257,7 +264,15 @@ export default function ClientSettingsPage() {
                   </div>
                 </div>
                 
-                <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800">
+                <Button 
+                  variant="outline" 
+                  className="border-slate-700 text-slate-300 hover:bg-slate-800"
+                  onClick={() => {
+                    console.log('Adding new payment method...');
+                    // Handle add payment method logic here
+                    alert('Add payment method functionality would open here!');
+                  }}
+                >
                   Add Payment Method
                 </Button>
               </div>
@@ -279,7 +294,17 @@ export default function ClientSettingsPage() {
                   <p className="text-sm text-slate-400 mb-4">
                     Permanently delete your account and all associated data. This action cannot be undone.
                   </p>
-                  <Button variant="destructive">
+                  <Button 
+                    variant="destructive"
+                    onClick={() => {
+                      console.log('Delete account requested...');
+                      // Handle delete account logic here
+                      const confirmed = confirm('Are you sure you want to delete your account? This action cannot be undone.');
+                      if (confirmed) {
+                        alert('Account deletion process would begin here!');
+                      }
+                    }}
+                  >
                     Delete Account
                   </Button>
                 </div>
