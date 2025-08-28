@@ -142,7 +142,7 @@ function AppSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/projects">
+            <Link href="/dashboard/client/projects">
               <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
                 <Briefcase className="w-5 h-5" />
                 Projects
@@ -150,7 +150,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/talent">
+            <Link href="/dashboard/client/talent">
               <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
                 <Users className="w-5 h-5" />
                 Talent
@@ -158,7 +158,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/messages">
+            <Link href="/dashboard/client/messages">
               <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
                 <MessageSquare className="w-5 h-5" />
                 Messages
@@ -166,7 +166,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/analytics">
+            <Link href="/dashboard/client/analytics">
               <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
                 <BarChart3 className="w-5 h-5" />
                 Analytics
@@ -174,7 +174,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/settings">
+            <Link href="/dashboard/client/settings">
               <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
                 <Settings className="w-5 h-5" />
                 Settings
@@ -197,6 +197,8 @@ export function ClientDashboard() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeProjects, setActiveProjects] = useState<Project[]>([])
   const [topTalent, setTopTalent] = useState<Talent[]>([])
+  const { user } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     // Load user's projects and available talent
@@ -217,7 +219,7 @@ export function ClientDashboard() {
                 <SidebarTrigger />
                 <div>
                   <h1 className="text-2xl font-bold">Client Dashboard</h1>
-                  <p className="text-slate-400">Manage your projects and talent</p>
+                  <p className="text-slate-400">Welcome back, {user?.firstName || 'User'}!</p>
                 </div>
               </div>
 
@@ -231,12 +233,12 @@ export function ClientDashboard() {
                     className="pl-10 w-64 bg-slate-800 border-slate-700"
                   />
                 </div>
-                <Button variant="ghost" size="icon" onClick={() => console.log('Notifications clicked')}>
+                <Button variant="ghost" size="icon" onClick={() => router.push('/dashboard/client/notifications')}>
                   <Bell className="w-5 h-5" />
                 </Button>
                 <Button 
                   className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
-                  onClick={() => console.log('Post Project clicked')}
+                  onClick={() => router.push('/dashboard/client/projects/new')}
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Post Project
@@ -327,11 +329,11 @@ export function ClientDashboard() {
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold">Active Projects</h3>
                     <div className="flex items-center space-x-2">
-                      <Button variant="ghost" size="sm" onClick={() => console.log('Filter clicked')}>
+                      <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard/client/projects?view=filter')}>
                         <Filter className="w-4 h-4 mr-2" />
                         Filter
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => console.log('Timeline clicked')}>
+                      <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard/client/projects?view=timeline')}>
                         <Calendar className="w-4 h-4 mr-2" />
                         Timeline
                       </Button>
@@ -346,7 +348,7 @@ export function ClientDashboard() {
                         <p className="text-slate-500 mb-4">Start by posting your first project to find talented freelancers.</p>
                         <Button 
                           className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
-                          onClick={() => console.log('Post Your First Project clicked')}
+                          onClick={() => router.push('/dashboard/client/projects/new')}
                         >
                           <Plus className="w-4 h-4 mr-2" />
                           Post Your First Project
@@ -382,7 +384,7 @@ export function ClientDashboard() {
                               <Star className="w-4 h-4 text-amber-400 fill-current" />
                               <span className="text-sm">{project.rating}</span>
                             </div>
-                            <Button variant="ghost" size="icon" className="w-8 h-8" onClick={() => console.log('More options clicked')}>
+                            <Button variant="ghost" size="icon" className="w-8 h-8" onClick={() => router.push(`/dashboard/client/projects/${project.id}`)}>
                               <MoreHorizontal className="w-4 h-4" />
                             </Button>
                           </div>
@@ -430,7 +432,7 @@ export function ClientDashboard() {
                     )}
                   </div>
 
-                  <Button variant="ghost" className="w-full mt-4">
+                  <Button variant="ghost" className="w-full mt-4" onClick={() => router.push('/dashboard/client/projects')}>
                     View All Projects
                   </Button>
                 </Card>
@@ -453,7 +455,7 @@ export function ClientDashboard() {
                         <Button 
                           variant="outline" 
                           className="border-slate-700 hover:bg-slate-800"
-                          onClick={() => console.log('Browse Talent clicked')}
+                          onClick={() => router.push('/dashboard/client/talent')}
                         >
                           <Search className="w-4 h-4 mr-2" />
                           Browse Talent
@@ -515,11 +517,12 @@ export function ClientDashboard() {
                           <Button
                             size="sm"
                             className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                            onClick={() => router.push(`/dashboard/client/messages?user=${talent.id}`)}
                           >
                             <MessageSquare className="w-3 h-3 mr-1" />
                             Message
                           </Button>
-                          <Button size="sm" variant="ghost">
+                          <Button size="sm" variant="ghost" onClick={() => router.push(`/dashboard/client/talent/${talent.id}`)}>
                             <Eye className="w-3 h-3" />
                           </Button>
                         </div>
@@ -528,7 +531,7 @@ export function ClientDashboard() {
                     )}
                   </div>
 
-                  <Button className="w-full mt-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+                  <Button className="w-full mt-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600" onClick={() => router.push('/dashboard/client/talent')}>
                     <Users className="w-4 h-4 mr-2" />
                     Browse All Talent
                   </Button>
@@ -541,13 +544,14 @@ export function ClientDashboard() {
               <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
                 <h3 className="text-xl font-semibold mb-6">Quick Actions</h3>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <Button className="h-20 flex-col space-y-2 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                  <Button className="h-20 flex-col space-y-2 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600" onClick={() => router.push('/dashboard/client/projects/new')}>
                     <Plus className="w-6 h-6" />
                     <span>Post New Project</span>
                   </Button>
                   <Button
                     variant="outline"
                     className="h-20 flex-col space-y-2 border-slate-700 hover:bg-slate-800 bg-transparent"
+                    onClick={() => router.push('/dashboard/client/talent')}
                   >
                     <Search className="w-6 h-6" />
                     <span>Find Talent</span>
@@ -555,6 +559,7 @@ export function ClientDashboard() {
                   <Button
                     variant="outline"
                     className="h-20 flex-col space-y-2 border-slate-700 hover:bg-slate-800 bg-transparent"
+                    onClick={() => router.push('/dashboard/client/analytics')}
                   >
                     <BarChart3 className="w-6 h-6" />
                     <span>View Analytics</span>
@@ -562,6 +567,7 @@ export function ClientDashboard() {
                   <Button
                     variant="outline"
                     className="h-20 flex-col space-y-2 border-slate-700 hover:bg-slate-800 bg-transparent"
+                    onClick={() => router.push('/dashboard/client/escrow')}
                   >
                     <Shield className="w-6 h-6" />
                     <span>Escrow Status</span>

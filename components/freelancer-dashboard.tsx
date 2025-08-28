@@ -144,7 +144,7 @@ function AppSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/projects">
+            <Link href="/dashboard/freelancer/projects">
               <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
                 <Briefcase className="w-5 h-5" />
                 Projects
@@ -152,7 +152,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/skills">
+            <Link href="/dashboard/freelancer/skills">
               <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
                 <Award className="w-5 h-5" />
                 Skills
@@ -160,7 +160,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/messages">
+            <Link href="/dashboard/freelancer/messages">
               <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
                 <MessageSquare className="w-5 h-5" />
                 Messages
@@ -168,7 +168,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/analytics">
+            <Link href="/dashboard/freelancer/analytics">
               <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
                 <BarChart3 className="w-5 h-5" />
                 Analytics
@@ -176,7 +176,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/settings">
+            <Link href="/dashboard/freelancer/settings">
               <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
                 <Settings className="w-5 h-5" />
                 Settings
@@ -200,6 +200,8 @@ export function FreelancerDashboard() {
   const [skillsData, setSkillsData] = useState<Skill[]>([])
   const [activeProjects, setActiveProjects] = useState<Project[]>([])
   const [recommendedProjects, setRecommendedProjects] = useState<Project[]>([])
+  const { user } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     // Load dynamic data when component mounts
@@ -221,20 +223,20 @@ export function FreelancerDashboard() {
                 <SidebarTrigger />
                 <div>
                   <h1 className="text-2xl font-bold">Dashboard</h1>
-                  <p className="text-slate-400">Welcome back, John!</p>
+                  <p className="text-slate-400">Welcome back, {user?.firstName || 'User'}!</p>
                 </div>
               </div>
 
               <div className="flex items-center space-x-4">
-                <Button variant="ghost" size="icon" onClick={() => console.log('Search clicked')}>
+                <Button variant="ghost" size="icon" onClick={() => router.push('/dashboard/freelancer/search')}>
                   <Search className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => console.log('Notifications clicked')}>
+                <Button variant="ghost" size="icon" onClick={() => router.push('/dashboard/freelancer/notifications')}>
                   <Bell className="w-5 h-5" />
                 </Button>
                 <Button 
                   className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
-                  onClick={() => console.log('Boost Profile clicked')}
+                  onClick={() => router.push('/dashboard/freelancer/boost')}
                 >
                   <Zap className="w-4 h-4 mr-2" />
                   Boost Profile
@@ -324,7 +326,7 @@ export function FreelancerDashboard() {
                 <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold">Skills Portfolio</h3>
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard/freelancer/skills')}>
                       <ExternalLink className="w-4 h-4 mr-2" />
                       View All
                     </Button>
@@ -373,7 +375,7 @@ export function FreelancerDashboard() {
                         <p className="text-slate-400 mb-4">No Skills Added Yet</p>
                         <Button 
                           className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
-                          onClick={() => console.log('Add Your First Skill clicked')}
+                          onClick={() => router.push('/dashboard/freelancer/skills/add')}
                         >
                           Add Your First Skill
                         </Button>
@@ -427,14 +429,14 @@ export function FreelancerDashboard() {
                       <div className="text-center py-8">
                         <Target className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                         <p className="text-slate-400 mb-4">No Recommended Projects</p>
-                        <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                        <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600" onClick={() => router.push('/dashboard/freelancer/projects')}>
                           Browse All Projects
                         </Button>
                       </div>
                     )}
                   </div>
 
-                  <Button className="w-full mt-4 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                  <Button className="w-full mt-4 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600" onClick={() => router.push('/dashboard/freelancer/projects')}>
                     View All Opportunities
                   </Button>
                 </Card>
@@ -447,11 +449,11 @@ export function FreelancerDashboard() {
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-semibold">Active Projects</h3>
                   <div className="flex items-center space-x-2">
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard/freelancer/projects?view=filter')}>
                       <Filter className="w-4 h-4 mr-2" />
                       Filter
                     </Button>
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard/freelancer/projects?view=timeline')}>
                       <Calendar className="w-4 h-4 mr-2" />
                       Timeline
                     </Button>
@@ -514,7 +516,7 @@ export function FreelancerDashboard() {
                     <div className="text-center py-8">
                       <Briefcase className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                       <p className="text-slate-400 mb-4">No Active Projects</p>
-                      <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                      <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600" onClick={() => router.push('/dashboard/freelancer/projects')}>
                         Find Projects
                       </Button>
                     </div>
