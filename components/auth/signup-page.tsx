@@ -117,11 +117,13 @@ export function SignUpPage() {
   }, [])
 
   useEffect(() => {
-    // Redirect if already authenticated via Web3Auth or Wallet
-    if (isWeb3AuthConnected || isWalletConnected) {
-      router.push('/dashboard')
+    // Only redirect if already authenticated AND not in signup flow
+    // This prevents premature redirect during signup process
+    if ((isWeb3AuthConnected || isWalletConnected) && !showDetailsForm && signupMethod === null) {
+      // Check if user has completed profile setup before redirecting
+      // For now, we'll let them complete the signup form first
     }
-  }, [isWeb3AuthConnected, isWalletConnected, router])
+  }, [isWeb3AuthConnected, isWalletConnected, router, showDetailsForm, signupMethod])
 
   useEffect(() => {
     if (authError) {
