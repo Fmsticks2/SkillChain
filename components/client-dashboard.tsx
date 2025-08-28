@@ -120,70 +120,70 @@ function AppSidebar() {
     : `${userProfile?.firstName?.[0] || ''}${userProfile?.lastName?.[0] || ''}`.toUpperCase() || 'CL'
 
   return (
-    <Sidebar className="border-r border-slate-800">
-      <SidebarHeader className="p-6">
+    <Sidebar className="border-r border-slate-700/50 bg-gradient-to-b from-slate-900 to-slate-950">
+      <SidebarHeader className="p-6 border-b border-slate-700/30">
         <div className="flex items-center space-x-3">
-          <Avatar className="w-10 h-10">
-            <AvatarImage src="/placeholder.svg?height=40&width=40" />
-            <AvatarFallback>{initials}</AvatarFallback>
+          <Avatar className="w-12 h-12 ring-2 ring-blue-500/20">
+            <AvatarImage src="/placeholder.svg?height=48&width=48" />
+            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-cyan-500 text-white font-semibold">{initials}</AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="font-semibold text-white">{displayName}</h3>
-            <p className="text-sm text-slate-400">{userProfile?.company ? 'Enterprise Client' : 'Client'}</p>
+            <h3 className="font-semibold text-white text-lg">{displayName}</h3>
+            <p className="text-sm text-blue-300/80">{userProfile?.company ? 'Enterprise Client' : 'Client'}</p>
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent>
-        <SidebarMenu>
+      <SidebarContent className="px-3 py-4">
+        <SidebarMenu className="space-y-2">
           <SidebarMenuItem>
-            <SidebarMenuButton className="text-blue-400 bg-blue-500/10">
-              <Target className="w-4 h-4" />
+            <SidebarMenuButton className="text-white bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 shadow-lg border-0 rounded-lg py-3 px-4 font-medium">
+              <Target className="w-5 h-5" />
               Dashboard
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/dashboard/client">
-              <SidebarMenuButton>
-                <Briefcase className="w-4 h-4" />
+            <Link href="/projects">
+              <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
+                <Briefcase className="w-5 h-5" />
                 Projects
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/dashboard/client">
-              <SidebarMenuButton>
-                <Users className="w-4 h-4" />
+            <Link href="/talent">
+              <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
+                <Users className="w-5 h-5" />
                 Talent
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/dashboard/client">
-              <SidebarMenuButton>
-                <MessageSquare className="w-4 h-4" />
+            <Link href="/messages">
+              <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
+                <MessageSquare className="w-5 h-5" />
                 Messages
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/dashboard/client">
-              <SidebarMenuButton>
-                <BarChart3 className="w-4 h-4" />
+            <Link href="/analytics">
+              <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
+                <BarChart3 className="w-5 h-5" />
                 Analytics
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/dashboard/client">
-              <SidebarMenuButton>
-                <Settings className="w-4 h-4" />
+            <Link href="/settings">
+              <SidebarMenuButton className="text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-lg py-3 px-4 transition-all duration-200 border-0">
+                <Settings className="w-5 h-5" />
                 Settings
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleLogout}>
-              <LogOut className="w-4 h-4" />
+          <SidebarMenuItem className="mt-auto pt-4 border-t border-slate-700/30">
+            <SidebarMenuButton onClick={handleLogout} className="text-red-300 hover:text-red-200 hover:bg-red-500/10 rounded-lg py-3 px-4 transition-all duration-200 border-0">
+              <LogOut className="w-5 h-5" />
               Sign Out
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -206,12 +206,12 @@ export function ClientDashboard() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-slate-950 text-white flex">
+      <div className="h-screen w-screen bg-slate-950 text-white flex overflow-hidden">
         <AppSidebar />
 
         <div className="flex-1">
           {/* Header */}
-          <header className="border-b border-slate-800 p-6">
+          <header className="border-b border-slate-800 px-4 py-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <SidebarTrigger />
@@ -231,10 +231,13 @@ export function ClientDashboard() {
                     className="pl-10 w-64 bg-slate-800 border-slate-700"
                   />
                 </div>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" onClick={() => console.log('Notifications clicked')}>
                   <Bell className="w-5 h-5" />
                 </Button>
-                <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                <Button 
+                  className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                  onClick={() => console.log('Post Project clicked')}
+                >
                   <Plus className="w-4 h-4 mr-2" />
                   Post Project
                 </Button>
@@ -242,7 +245,7 @@ export function ClientDashboard() {
             </div>
           </header>
 
-          <div className="p-6 space-y-6">
+          <div className="p-4 space-y-4 overflow-y-auto flex-1">
             {/* Stats Overview */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
@@ -324,11 +327,11 @@ export function ClientDashboard() {
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold">Active Projects</h3>
                     <div className="flex items-center space-x-2">
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" onClick={() => console.log('Filter clicked')}>
                         <Filter className="w-4 h-4 mr-2" />
                         Filter
                       </Button>
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" onClick={() => console.log('Timeline clicked')}>
                         <Calendar className="w-4 h-4 mr-2" />
                         Timeline
                       </Button>
@@ -341,7 +344,10 @@ export function ClientDashboard() {
                         <Briefcase className="w-12 h-12 text-slate-600 mx-auto mb-4" />
                         <h4 className="text-lg font-medium text-slate-400 mb-2">No Active Projects</h4>
                         <p className="text-slate-500 mb-4">Start by posting your first project to find talented freelancers.</p>
-                        <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                        <Button 
+                          className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                          onClick={() => console.log('Post Your First Project clicked')}
+                        >
                           <Plus className="w-4 h-4 mr-2" />
                           Post Your First Project
                         </Button>
@@ -376,7 +382,7 @@ export function ClientDashboard() {
                               <Star className="w-4 h-4 text-amber-400 fill-current" />
                               <span className="text-sm">{project.rating}</span>
                             </div>
-                            <Button variant="ghost" size="icon" className="w-8 h-8">
+                            <Button variant="ghost" size="icon" className="w-8 h-8" onClick={() => console.log('More options clicked')}>
                               <MoreHorizontal className="w-4 h-4" />
                             </Button>
                           </div>
@@ -444,7 +450,11 @@ export function ClientDashboard() {
                         <Users className="w-12 h-12 text-slate-600 mx-auto mb-4" />
                         <h4 className="text-lg font-medium text-slate-400 mb-2">No Talent Available</h4>
                         <p className="text-slate-500 mb-4">Browse our marketplace to discover skilled freelancers.</p>
-                        <Button variant="outline" className="border-slate-700 hover:bg-slate-800">
+                        <Button 
+                          variant="outline" 
+                          className="border-slate-700 hover:bg-slate-800"
+                          onClick={() => console.log('Browse Talent clicked')}
+                        >
                           <Search className="w-4 h-4 mr-2" />
                           Browse Talent
                         </Button>
