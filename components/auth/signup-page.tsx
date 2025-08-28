@@ -177,6 +177,16 @@ export function SignUpPage() {
       // Store user role in localStorage for future signin redirects
       localStorage.setItem('userRole', userType)
       
+      // Store user profile data in localStorage
+      const userProfile = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        company: formData.company,
+        role: userType
+      }
+      localStorage.setItem('userProfile', JSON.stringify(userProfile))
+      
       // Redirect to role-specific dashboard after profile completion
       router.push(`/dashboard/${userType}`)
     } catch (err) {

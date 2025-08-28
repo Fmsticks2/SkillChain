@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -44,75 +44,82 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth"
 
-const skillsData = [
-  { name: "React Development", level: 95, verified: true, projects: 24, earnings: 15420 },
-  { name: "TypeScript", level: 88, verified: true, projects: 18, earnings: 12300 },
-  { name: "Node.js", level: 82, verified: true, projects: 15, earnings: 9800 },
-  { name: "UI/UX Design", level: 76, verified: false, projects: 8, earnings: 5200 },
-]
+// Type definitions
+interface Skill {
+  id: string
+  name: string
+  level: number
+  experience: string
+  verified: boolean
+  projects: number
+  earnings: number
+}
 
-const activeProjects = [
-  {
-    id: 1,
-    title: "DeFi Dashboard Redesign",
-    client: "CryptoVault Inc.",
-    budget: 8500,
-    progress: 75,
-    deadline: "2024-02-15",
-    status: "In Progress",
-    skills: ["React", "TypeScript", "Web3"],
-  },
-  {
-    id: 2,
-    title: "NFT Marketplace Frontend",
-    client: "ArtChain Labs",
-    budget: 12000,
-    progress: 45,
-    deadline: "2024-03-01",
-    status: "In Progress",
-    skills: ["Next.js", "Solidity", "IPFS"],
-  },
-  {
-    id: 3,
-    title: "Smart Contract Audit",
-    client: "DeFi Protocol",
-    budget: 6000,
-    progress: 90,
-    deadline: "2024-01-30",
-    status: "Review",
-    skills: ["Solidity", "Security", "Testing"],
-  },
-]
+interface Project {
+  id: string
+  title: string
+  client: string
+  avatar?: string
+  budget: number
+  status: string
+  progress: number
+  skills: string[]
+  deadline: string
+  description?: string
+  match?: number
+  posted?: string
+}
 
-const recommendedProjects = [
-  {
-    id: 4,
-    title: "Web3 Gaming Platform",
-    client: "GameFi Studios",
-    budget: 15000,
-    match: 94,
-    skills: ["React", "Web3", "Gaming"],
-    posted: "2 hours ago",
-  },
-  {
-    id: 5,
-    title: "DAO Governance Interface",
-    client: "DecentralDAO",
-    budget: 9500,
-    match: 87,
-    skills: ["Vue.js", "Governance", "UI/UX"],
-    posted: "5 hours ago",
-  },
-]
+// Skills data will be loaded from user's profile
+const getSkillsData = (): Skill[] => {
+  // In a real app, this would fetch from user's skill profile
+  const savedSkills = localStorage.getItem('userSkills')
+  if (savedSkills) {
+    return JSON.parse(savedSkills)
+  }
+  return []
+}
+
+// Active projects will be loaded from freelancer's accepted projects
+const getActiveProjects = (): Project[] => {
+  // In a real app, this would fetch from freelancer's project assignments
+  const savedProjects = localStorage.getItem('freelancerProjects')
+  if (savedProjects) {
+    return JSON.parse(savedProjects)
+  }
+  return []
+}
+
+// Recommended projects will be loaded based on freelancer's skills
+const getRecommendedProjects = (): Project[] => {
+  // In a real app, this would fetch projects matching freelancer's skills
+  const savedRecommendations = localStorage.getItem('recommendedProjects')
+  if (savedRecommendations) {
+    return JSON.parse(savedRecommendations)
+  }
+  return []
+}
 
 function AppSidebar() {
   const { user, logout } = useAuth()
   const router = useRouter()
+  const [userProfile, setUserProfile] = useState<any>(null)
+
+  useEffect(() => {
+    // Load user profile from localStorage
+    const storedProfile = localStorage.getItem('userProfile')
+    if (storedProfile) {
+      setUserProfile(JSON.parse(storedProfile))
+    }
+  }, [])
 
   const handleLogout = () => {
     logout()
     router.push('/')
   }
+
+  const displayName = `${userProfile?.firstName || ''} ${userProfile?.lastName || ''}`.trim() || 'Freelancer'
+  const initials = `${userProfile?.firstName?.[0] || ''}${userProfile?.lastName?.[0] || ''}`.toUpperCase() || 'FL'
 
   return (
     <Sidebar className="border-r border-slate-800">
@@ -120,10 +127,10 @@ function AppSidebar() {
         <div className="flex items-center space-x-3">
           <Avatar className="w-10 h-10">
             <AvatarImage src="/placeholder.svg?height=40&width=40" />
-            <AvatarFallback>JD</AvatarFallback>
+            <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="font-semibold text-white">John Doe</h3>
+            <h3 className="font-semibold text-white">{displayName}</h3>
             <p className="text-sm text-slate-400">Blockchain Developer</p>
           </div>
         </div>
@@ -137,7 +144,7 @@ function AppSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/projects">
+            <Link href="/dashboard/freelancer">
               <SidebarMenuButton>
                 <Briefcase className="w-4 h-4" />
                 Projects
@@ -145,7 +152,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/skills">
+            <Link href="/dashboard/freelancer">
               <SidebarMenuButton>
                 <Award className="w-4 h-4" />
                 Skills
@@ -153,7 +160,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/messages">
+            <Link href="/dashboard/freelancer">
               <SidebarMenuButton>
                 <MessageSquare className="w-4 h-4" />
                 Messages
@@ -161,7 +168,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/analytics">
+            <Link href="/dashboard/freelancer">
               <SidebarMenuButton>
                 <BarChart3 className="w-4 h-4" />
                 Analytics
@@ -169,7 +176,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/settings">
+            <Link href="/dashboard/freelancer">
               <SidebarMenuButton>
                 <Settings className="w-4 h-4" />
                 Settings
@@ -190,6 +197,16 @@ function AppSidebar() {
 
 export function FreelancerDashboard() {
   const [selectedTimeframe, setSelectedTimeframe] = useState("30d")
+  const [skillsData, setSkillsData] = useState<Skill[]>([])
+  const [activeProjects, setActiveProjects] = useState<Project[]>([])
+  const [recommendedProjects, setRecommendedProjects] = useState<Project[]>([])
+
+  useEffect(() => {
+    // Load dynamic data when component mounts
+    setSkillsData(getSkillsData())
+    setActiveProjects(getActiveProjects())
+    setRecommendedProjects(getRecommendedProjects())
+  }, [])
 
   return (
     <SidebarProvider>
@@ -311,7 +328,8 @@ export function FreelancerDashboard() {
                   </div>
 
                   <div className="space-y-4">
-                    {skillsData.map((skill, index) => (
+                    {skillsData.length > 0 ? (
+                      skillsData.map((skill, index) => (
                       <motion.div
                         key={skill.name}
                         initial={{ opacity: 0, x: -20 }}
@@ -345,7 +363,16 @@ export function FreelancerDashboard() {
                         </div>
                         <Progress value={skill.level} className="h-2" />
                       </motion.div>
-                    ))}
+                      ))
+                    ) : (
+                      <div className="text-center py-8">
+                        <Code className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                        <p className="text-slate-400 mb-4">No Skills Added Yet</p>
+                        <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                          Add Your First Skill
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </Card>
               </motion.div>
@@ -359,7 +386,8 @@ export function FreelancerDashboard() {
                   </div>
 
                   <div className="space-y-4">
-                    {recommendedProjects.map((project, index) => (
+                    {recommendedProjects.length > 0 ? (
+                      recommendedProjects.map((project, index) => (
                       <motion.div
                         key={project.id}
                         initial={{ opacity: 0, y: 20 }}
@@ -388,7 +416,16 @@ export function FreelancerDashboard() {
                           ))}
                         </div>
                       </motion.div>
-                    ))}
+                      ))
+                    ) : (
+                      <div className="text-center py-8">
+                        <Target className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                        <p className="text-slate-400 mb-4">No Recommended Projects</p>
+                        <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                          Browse All Projects
+                        </Button>
+                      </div>
+                    )}
                   </div>
 
                   <Button className="w-full mt-4 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
@@ -416,7 +453,8 @@ export function FreelancerDashboard() {
                 </div>
 
                 <div className="space-y-4">
-                  {activeProjects.map((project, index) => (
+                  {activeProjects.length > 0 ? (
+                    activeProjects.map((project, index) => (
                     <motion.div
                       key={project.id}
                       initial={{ opacity: 0, x: -20 }}
@@ -465,7 +503,16 @@ export function FreelancerDashboard() {
                         </div>
                       </div>
                     </motion.div>
-                  ))}
+                    ))
+                  ) : (
+                    <div className="text-center py-8">
+                      <Briefcase className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                      <p className="text-slate-400 mb-4">No Active Projects</p>
+                      <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                        Find Projects
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </Card>
             </motion.div>

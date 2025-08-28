@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -43,95 +43,81 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth"
 
-const activeProjects = [
-  {
-    id: 1,
-    title: "DeFi Dashboard Redesign",
-    freelancer: "John Doe",
-    avatar: "/placeholder.svg?height=32&width=32",
-    budget: 8500,
-    spent: 6375,
-    progress: 75,
-    deadline: "2024-02-15",
-    status: "In Progress",
-    skills: ["React", "TypeScript", "Web3"],
-    rating: 4.9,
-  },
-  {
-    id: 2,
-    title: "Smart Contract Audit",
-    freelancer: "Alice Smith",
-    avatar: "/placeholder.svg?height=32&width=32",
-    budget: 12000,
-    spent: 5400,
-    progress: 45,
-    deadline: "2024-03-01",
-    status: "In Progress",
-    skills: ["Solidity", "Security", "Testing"],
-    rating: 4.8,
-  },
-  {
-    id: 3,
-    title: "NFT Marketplace Frontend",
-    freelancer: "Bob Wilson",
-    avatar: "/placeholder.svg?height=32&width=32",
-    budget: 15000,
-    spent: 13500,
-    progress: 90,
-    deadline: "2024-01-30",
-    status: "Review",
-    skills: ["Next.js", "IPFS", "Web3"],
-    rating: 5.0,
-  },
-]
+// Type definitions
+interface Project {
+  id: string
+  title: string
+  client: string
+  avatar?: string
+  budget: number
+  status: string
+  progress: number
+  skills: string[]
+  deadline: string
+  description?: string
+  freelancer?: string
+  rating?: number
+  spent?: number
+}
 
-const topTalent = [
-  {
-    id: 1,
-    name: "Sarah Chen",
-    avatar: "/placeholder.svg?height=40&width=40",
-    title: "Full Stack Developer",
-    rating: 4.9,
-    hourlyRate: 85,
-    skills: ["React", "Node.js", "PostgreSQL"],
-    availability: "Available",
-    completedProjects: 47,
-    successRate: 98,
-  },
-  {
-    id: 2,
-    name: "Michael Rodriguez",
-    avatar: "/placeholder.svg?height=40&width=40",
-    title: "Blockchain Developer",
-    rating: 4.8,
-    hourlyRate: 120,
-    skills: ["Solidity", "Web3", "DeFi"],
-    availability: "Busy",
-    completedProjects: 32,
-    successRate: 96,
-  },
-  {
-    id: 3,
-    name: "Emily Johnson",
-    avatar: "/placeholder.svg?height=40&width=40",
-    title: "UI/UX Designer",
-    rating: 4.9,
-    hourlyRate: 75,
-    skills: ["Figma", "Design Systems", "Prototyping"],
-    availability: "Available",
-    completedProjects: 63,
-    successRate: 99,
-  },
-]
+interface Talent {
+  id: string
+  name: string
+  avatar?: string
+  title: string
+  rating: number
+  hourlyRate: number
+  skills: string[]
+  location?: string
+  availability?: string
+  completedProjects?: number
+  successRate?: number
+}
+
+// Active projects will be loaded from user's actual project data
+const getActiveProjects = (): Project[] => {
+  // In a real app, this would fetch from an API or database
+  // For now, return empty array - projects will be added when user creates them
+  const savedProjects = localStorage.getItem('userProjects')
+  if (savedProjects) {
+    return JSON.parse(savedProjects)
+  }
+  return []
+}
+
+// Top talent will be loaded from platform's freelancer data
+const getTopTalent = (): Talent[] => {
+  // In a real app, this would fetch from an API
+  // For now, return empty array - talent will be populated from actual freelancer profiles
+  const savedTalent = localStorage.getItem('platformTalent')
+  if (savedTalent) {
+    return JSON.parse(savedTalent)
+  }
+  return []
+}
 
 function AppSidebar() {
   const { user, logout } = useAuth()
   const router = useRouter()
+  const [userProfile, setUserProfile] = useState<any>(null)
+
+  useEffect(() => {
+    // Load user profile from localStorage
+    const storedProfile = localStorage.getItem('userProfile')
+    if (storedProfile) {
+      setUserProfile(JSON.parse(storedProfile))
+    }
+  }, [])
 
   const handleLogout = () => {
     logout()
     router.push('/')
   }
+
+  const displayName = userProfile?.company || `${userProfile?.firstName || ''} ${userProfile?.lastName || ''}`.trim() || 'Client'
+  const initials = userProfile?.company 
+    ? userProfile.company.split(' ').map((word: string) => word[0]).join('').substring(0, 2).toUpperCase()
+    : `${userProfile?.firstName?.[0] || ''}${userProfile?.lastName?.[0] || ''}`.toUpperCase() || 'CL'
 
   return (
     <Sidebar className="border-r border-slate-800">
@@ -139,11 +125,11 @@ function AppSidebar() {
         <div className="flex items-center space-x-3">
           <Avatar className="w-10 h-10">
             <AvatarImage src="/placeholder.svg?height=40&width=40" />
-            <AvatarFallback>TC</AvatarFallback>
+            <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="font-semibold text-white">TechCorp Inc.</h3>
-            <p className="text-sm text-slate-400">Enterprise Client</p>
+            <h3 className="font-semibold text-white">{displayName}</h3>
+            <p className="text-sm text-slate-400">{userProfile?.company ? 'Enterprise Client' : 'Client'}</p>
           </div>
         </div>
       </SidebarHeader>
@@ -156,7 +142,7 @@ function AppSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/projects">
+            <Link href="/dashboard/client">
               <SidebarMenuButton>
                 <Briefcase className="w-4 h-4" />
                 Projects
@@ -164,7 +150,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/talent">
+            <Link href="/dashboard/client">
               <SidebarMenuButton>
                 <Users className="w-4 h-4" />
                 Talent
@@ -172,7 +158,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/messages">
+            <Link href="/dashboard/client">
               <SidebarMenuButton>
                 <MessageSquare className="w-4 h-4" />
                 Messages
@@ -180,7 +166,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/analytics">
+            <Link href="/dashboard/client">
               <SidebarMenuButton>
                 <BarChart3 className="w-4 h-4" />
                 Analytics
@@ -188,7 +174,7 @@ function AppSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/settings">
+            <Link href="/dashboard/client">
               <SidebarMenuButton>
                 <Settings className="w-4 h-4" />
                 Settings
@@ -209,6 +195,14 @@ function AppSidebar() {
 
 export function ClientDashboard() {
   const [searchQuery, setSearchQuery] = useState("")
+  const [activeProjects, setActiveProjects] = useState<Project[]>([])
+  const [topTalent, setTopTalent] = useState<Talent[]>([])
+
+  useEffect(() => {
+    // Load user's projects and available talent
+    setActiveProjects(getActiveProjects())
+    setTopTalent(getTopTalent())
+  }, [])
 
   return (
     <SidebarProvider>
@@ -342,7 +336,18 @@ export function ClientDashboard() {
                   </div>
 
                   <div className="space-y-4">
-                    {activeProjects.map((project, index) => (
+                    {activeProjects.length === 0 ? (
+                      <div className="text-center py-8">
+                        <Briefcase className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+                        <h4 className="text-lg font-medium text-slate-400 mb-2">No Active Projects</h4>
+                        <p className="text-slate-500 mb-4">Start by posting your first project to find talented freelancers.</p>
+                        <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                          <Plus className="w-4 h-4 mr-2" />
+                          Post Your First Project
+                        </Button>
+                      </div>
+                    ) : (
+                      activeProjects.map((project, index) => (
                       <motion.div
                         key={project.id}
                         initial={{ opacity: 0, x: -20 }}
@@ -354,11 +359,11 @@ export function ClientDashboard() {
                           <div className="flex items-center space-x-3">
                             <Avatar className="w-10 h-10">
                               <AvatarImage src={project.avatar || "/placeholder.svg"} />
-                              <AvatarFallback>
+                              <AvatarFallback className="bg-slate-700">
                                 {project.freelancer
-                                  .split(" ")
-                                  .map((n) => n[0])
-                                  .join("")}
+                                  ?.split(" ")
+                                  .map((n: string) => n[0])
+                                  .join("") || "FL"}
                               </AvatarFallback>
                             </Avatar>
                             <div>
@@ -384,7 +389,7 @@ export function ClientDashboard() {
                           </div>
                           <div>
                             <p className="text-slate-400 text-sm">Spent</p>
-                            <p className="font-semibold text-blue-400">${project.spent.toLocaleString()}</p>
+                            <p className="font-semibold text-blue-400">${project.spent?.toLocaleString() || '0'}</p>
                           </div>
                         </div>
 
@@ -415,7 +420,8 @@ export function ClientDashboard() {
                           </Badge>
                         </div>
                       </motion.div>
-                    ))}
+                      ))
+                    )}
                   </div>
 
                   <Button variant="ghost" className="w-full mt-4">
@@ -433,7 +439,18 @@ export function ClientDashboard() {
                   </div>
 
                   <div className="space-y-4">
-                    {topTalent.map((talent, index) => (
+                    {topTalent.length === 0 ? (
+                      <div className="text-center py-8">
+                        <Users className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+                        <h4 className="text-lg font-medium text-slate-400 mb-2">No Talent Available</h4>
+                        <p className="text-slate-500 mb-4">Browse our marketplace to discover skilled freelancers.</p>
+                        <Button variant="outline" className="border-slate-700 hover:bg-slate-800">
+                          <Search className="w-4 h-4 mr-2" />
+                          Browse Talent
+                        </Button>
+                      </div>
+                    ) : (
+                      topTalent.map((talent, index) => (
                       <motion.div
                         key={talent.id}
                         initial={{ opacity: 0, y: 20 }}
@@ -497,7 +514,8 @@ export function ClientDashboard() {
                           </Button>
                         </div>
                       </motion.div>
-                    ))}
+                      ))
+                    )}
                   </div>
 
                   <Button className="w-full mt-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">

@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useEthereum } from "@/hooks/use-ethereum"
+import { useAuth } from "@/lib/auth"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import {
   Wallet,
@@ -119,6 +121,8 @@ const escrowContracts = [
 
 export function WalletIntegration() {
   const { isMetaMaskInstalled, currentAccount, connect, error } = useEthereum()
+  const { logout } = useAuth()
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState("overview")
   const [showConnectDialog, setShowConnectDialog] = useState(false)
   const [showDisconnectDialog, setShowDisconnectDialog] = useState(false)
@@ -141,13 +145,18 @@ export function WalletIntegration() {
     }
   }
   
-  const handleDisconnect = () => {
-    // MetaMask doesn't have a direct disconnect method
-    // We can simulate disconnection by clearing local state
-    window.localStorage.removeItem('walletconnect')
-    // Force page reload to clear connection state
-    window.location.reload()
-    setShowDisconnectDialog(false)
+  const handleDisconnect = async () => {
+    try {
+      // Use the auth logout function for proper cleanup
+      await logout()
+      // Clear any wallet-specific local storage
+      window.localStorage.removeItem('walletconnect')
+      // Redirect to home page
+      router.push('/')
+      setShowDisconnectDialog(false)
+    } catch (err) {
+      console.error('Failed to disconnect:', err)
+    }
   }
 
   return (

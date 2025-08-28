@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -137,7 +137,16 @@ export function MessagesPage() {
   const [newMessage, setNewMessage] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
   const [isTyping, setIsTyping] = useState(false)
+  const [userRole, setUserRole] = useState<string>("freelancer")
   const { user } = useAuth()
+
+  useEffect(() => {
+    const userProfile = localStorage.getItem('userProfile')
+    if (userProfile) {
+      const profile = JSON.parse(userProfile)
+      setUserRole(profile.role || 'freelancer')
+    }
+  }, [])
 
   const filteredConversations = mockConversations.filter((conversation) =>
     conversation.name.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -177,7 +186,7 @@ export function MessagesPage() {
           <div className="p-4 border-b border-slate-800">
             <div className="flex items-center justify-between mb-4">
               <Link
-                href="/dashboard/freelancer"
+                href={`/dashboard/${userRole}`}
                 className="inline-flex items-center space-x-2 text-slate-400 hover:text-white transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
