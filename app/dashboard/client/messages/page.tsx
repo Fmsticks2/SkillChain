@@ -80,26 +80,26 @@ export default function ClientMessagesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-slate-900">Messages</h1>
-          <p className="text-slate-600 mt-2">Communicate with your freelancers</p>
+          <h1 className="text-3xl font-bold text-white">Messages</h1>
+          <p className="text-slate-400 mt-2">Communicate with your freelancers</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
           {/* Conversations List */}
-          <Card className="lg:col-span-1">
+          <Card className="lg:col-span-1 bg-slate-900 border-slate-800">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Conversations</CardTitle>
-                <Button variant="ghost" size="sm">
+                <CardTitle className="text-white">Conversations</CardTitle>
+                <Button variant="ghost" size="sm" className="text-slate-400 hover:bg-slate-800">
                   <MoreVertical className="w-4 h-4" />
                 </Button>
               </div>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-                <Input placeholder="Search conversations..." className="pl-10" />
+                <Input placeholder="Search conversations..." className="pl-10 bg-slate-800 border-slate-700 text-white" />
               </div>
             </CardHeader>
             <CardContent className="p-0">
@@ -108,8 +108,8 @@ export default function ClientMessagesPage() {
                   <div
                     key={conversation.id}
                     onClick={() => setSelectedChat(conversation.id)}
-                    className={`p-4 cursor-pointer hover:bg-slate-50 transition-colors ${
-                      selectedChat === conversation.id ? 'bg-blue-50 border-r-2 border-blue-500' : ''
+                    className={`p-4 cursor-pointer hover:bg-slate-800 transition-colors ${
+                      selectedChat === conversation.id ? 'bg-slate-800 border-r-2 border-blue-500' : ''
                     }`}
                   >
                     <div className="flex items-start space-x-3">
@@ -124,11 +124,11 @@ export default function ClientMessagesPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
-                          <h4 className="font-medium text-slate-900 truncate">{conversation.name}</h4>
-                          <span className="text-xs text-slate-500">{conversation.timestamp}</span>
+                          <h4 className="font-medium text-white truncate">{conversation.name}</h4>
+                          <span className="text-xs text-slate-400">{conversation.timestamp}</span>
                         </div>
-                        <Badge variant="outline" className="text-xs mb-1">{conversation.project}</Badge>
-                        <p className="text-sm text-slate-600 truncate">{conversation.lastMessage}</p>
+                        <Badge variant="outline" className="text-xs mb-1 bg-slate-800 text-slate-300 border-slate-700">{conversation.project}</Badge>
+                        <p className="text-sm text-slate-400 truncate">{conversation.lastMessage}</p>
                       </div>
                       {conversation.unread > 0 && (
                         <div className="bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -143,20 +143,20 @@ export default function ClientMessagesPage() {
           </Card>
 
           {/* Chat Area */}
-          <Card className="lg:col-span-2 flex flex-col">
+          <Card className="lg:col-span-2 flex flex-col bg-slate-900 border-slate-800">
             {selectedChat ? (
               <>
                 {/* Chat Header */}
-                <CardHeader className="border-b">
+                <CardHeader className="border-b border-slate-800">
                   <div className="flex items-center space-x-3">
                     <Avatar className="w-10 h-10">
                       <AvatarImage src="/placeholder-user.jpg" alt="Sarah Johnson" />
                       <AvatarFallback>SJ</AvatarFallback>
                     </Avatar>
                     <div>
-                      <h3 className="font-semibold">Sarah Johnson</h3>
+                      <h3 className="font-semibold text-white">Sarah Johnson</h3>
                       <div className="flex items-center space-x-2">
-                        <Badge variant="outline" className="text-xs">E-commerce Website</Badge>
+                        <Badge variant="outline" className="text-xs bg-slate-800 text-slate-300 border-slate-700">E-commerce Website</Badge>
                         <span className="text-xs text-green-500">● Online</span>
                       </div>
                     </div>
@@ -174,13 +174,13 @@ export default function ClientMessagesPage() {
                         className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
                           message.isOwn
                             ? 'bg-blue-500 text-white'
-                            : 'bg-slate-100 text-slate-900'
+                            : 'bg-slate-800 text-white'
                         }`}
                       >
                         <p className="text-sm">{message.content}</p>
                         <p
                           className={`text-xs mt-1 ${
-                            message.isOwn ? 'text-blue-100' : 'text-slate-500'
+                            message.isOwn ? 'text-blue-100' : 'text-slate-400'
                           }`}
                         >
                           {message.timestamp}
@@ -191,9 +191,9 @@ export default function ClientMessagesPage() {
                 </CardContent>
 
                 {/* Message Input */}
-                <div className="border-t p-4">
+                <div className="border-t border-slate-800 p-4">
                   <div className="flex items-center space-x-2">
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" className="text-slate-400 hover:bg-slate-800">
                       <Paperclip className="w-4 h-4" />
                     </Button>
                     <Input
@@ -201,7 +201,7 @@ export default function ClientMessagesPage() {
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder="Type your message..."
                       onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                      className="flex-1"
+                      className="flex-1 bg-slate-800 border-slate-700 text-white"
                     />
                     <Button onClick={handleSendMessage} size="sm">
                       <Send className="w-4 h-4" />
@@ -211,8 +211,8 @@ export default function ClientMessagesPage() {
               </>
             ) : (
               <div className="flex-1 flex items-center justify-center">
-                <div className="text-center text-slate-500">
-                  <h3 className="text-lg font-medium mb-2">Select a conversation</h3>
+                <div className="text-center text-slate-400">
+                  <h3 className="text-lg font-medium mb-2 text-white">Select a conversation</h3>
                   <p>Choose a conversation from the list to start messaging</p>
                 </div>
               </div>

@@ -59,33 +59,33 @@ export default function ClientTalentPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Browse Talent</h1>
-          <p className="text-slate-600 mt-2">Find skilled freelancers for your projects</p>
+          <h1 className="text-3xl font-bold text-white">Browse Talent</h1>
+          <p className="text-slate-400 mt-2">Find skilled freelancers for your projects</p>
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+        <div className="bg-slate-900 border-slate-800 rounded-lg shadow-sm border p-6 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="md:col-span-2">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
                 <Input
-                  placeholder="Search by skills, name, or title..."
+                  placeholder="Search freelancers by skills, name, or expertise..."
+                  className="pl-10 bg-slate-800 border-slate-700 text-white"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
                 />
               </div>
             </div>
             <Select>
-              <SelectTrigger>
+              <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-slate-800 border-slate-700">
                 <SelectItem value="all">All Categories</SelectItem>
                 <SelectItem value="development">Development</SelectItem>
                 <SelectItem value="design">Design</SelectItem>
@@ -93,7 +93,7 @@ export default function ClientTalentPage() {
                 <SelectItem value="writing">Writing</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline">
+            <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800">
               <Filter className="w-4 h-4 mr-2" />
               More Filters
             </Button>
@@ -103,7 +103,7 @@ export default function ClientTalentPage() {
         {/* Freelancers Grid */}
         <div className="grid gap-6">
           {freelancers.map((freelancer) => (
-            <Card key={freelancer.id} className="hover:shadow-lg transition-shadow">
+            <Card key={freelancer.id} className="hover:shadow-lg transition-shadow bg-slate-900 border-slate-800">
               <CardContent className="p-6">
                 <div className="flex items-start space-x-4">
                   <Avatar className="w-16 h-16">
@@ -114,34 +114,34 @@ export default function ClientTalentPage() {
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-2">
                       <div>
-                        <h3 className="text-xl font-semibold text-slate-900">{freelancer.name}</h3>
-                        <p className="text-slate-600">{freelancer.title}</p>
+                        <h3 className="text-xl font-semibold text-white">{freelancer.name}</h3>
+                        <p className="text-slate-400">{freelancer.title}</p>
                       </div>
                       <div className="text-right">
                         <div className="flex items-center mb-1">
                           <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                          <span className="ml-1 font-medium">{freelancer.rating}</span>
-                          <span className="text-slate-500 text-sm ml-1">({freelancer.reviews} reviews)</span>
+                          <span className="ml-1 font-medium text-white">{freelancer.rating}</span>
+                          <span className="text-slate-400 text-sm ml-1">({freelancer.reviews} reviews)</span>
                         </div>
-                        <div className="flex items-center text-slate-600">
+                        <div className="flex items-center text-slate-400">
                           <DollarSign className="w-4 h-4" />
-                          <span className="font-medium">${freelancer.hourlyRate}/hr</span>
+                          <span className="font-medium text-white">${freelancer.hourlyRate}/hr</span>
                         </div>
                       </div>
                     </div>
                     
-                    <p className="text-slate-600 mb-3">{freelancer.description}</p>
+                    <p className="text-slate-400 mb-3">{freelancer.description}</p>
                     
                     <div className="flex flex-wrap gap-2 mb-4">
                       {freelancer.skills.map((skill) => (
-                        <Badge key={skill} variant="secondary" className="text-xs">
+                        <Badge key={skill} variant="secondary" className="text-xs bg-slate-800 text-slate-300">
                           {skill}
                         </Badge>
                       ))}
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4 text-sm text-slate-600">
+                      <div className="flex items-center space-x-4 text-sm text-slate-400">
                         <div className="flex items-center">
                           <MapPin className="w-4 h-4 mr-1" />
                           {freelancer.location}
@@ -157,7 +157,7 @@ export default function ClientTalentPage() {
                       
                       <div className="flex space-x-2">
                         <Link href={`/dashboard/client/talent/${freelancer.id}`}>
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" className="border-slate-700 text-slate-300 hover:bg-slate-800">
                             <Eye className="w-4 h-4 mr-2" />
                             View Profile
                           </Button>
@@ -179,7 +179,7 @@ export default function ClientTalentPage() {
 
         {/* Load More */}
         <div className="text-center mt-8">
-          <Button variant="outline" size="lg">
+          <Button variant="outline" size="lg" className="border-slate-700 text-slate-300 hover:bg-slate-800">
             Load More Freelancers
           </Button>
         </div>

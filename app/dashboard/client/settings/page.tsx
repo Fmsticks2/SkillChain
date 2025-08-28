@@ -36,19 +36,19 @@ export default function ClientSettingsPage() {
   })
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Settings</h1>
-          <p className="text-slate-600 mt-2">Manage your account preferences and settings</p>
+          <h1 className="text-3xl font-bold text-white">Settings</h1>
+          <p className="text-slate-400 mt-2">Manage your account preferences and settings</p>
         </div>
 
         <div className="space-y-6">
           {/* Profile Settings */}
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center text-white">
                 <User className="w-5 h-5 mr-2" />
                 Profile Information
               </CardTitle>
@@ -65,42 +65,43 @@ export default function ClientSettingsPage() {
                   </Button>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">John Doe</h3>
-                  <p className="text-slate-600">Client since January 2024</p>
-                  <Badge variant="secondary" className="mt-1">Verified Account</Badge>
+                  <h3 className="font-semibold text-lg text-white">John Doe</h3>
+                  <p className="text-slate-400">Client since January 2024</p>
+                  <Badge variant="secondary" className="mt-1 bg-slate-800 text-slate-300">Verified Account</Badge>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" defaultValue="John" />
+                  <Label htmlFor="firstName" className="text-slate-300">First Name</Label>
+                  <Input id="firstName" defaultValue="John" className="bg-slate-800 border-slate-700 text-white" />
                 </div>
                 <div>
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" defaultValue="Doe" />
+                  <Label htmlFor="lastName" className="text-slate-300">Last Name</Label>
+                  <Input id="lastName" defaultValue="Doe" className="bg-slate-800 border-slate-700 text-white" />
                 </div>
                 <div>
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" type="email" defaultValue="john.doe@example.com" />
+                  <Label htmlFor="email" className="text-slate-300">Email Address</Label>
+                  <Input id="email" type="email" defaultValue="john.doe@example.com" className="bg-slate-800 border-slate-700 text-white" />
                 </div>
                 <div>
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input id="phone" defaultValue="+1 (555) 123-4567" />
+                  <Label htmlFor="phone" className="text-slate-300">Phone Number</Label>
+                  <Input id="phone" defaultValue="+1 (555) 123-4567" className="bg-slate-800 border-slate-700 text-white" />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="company">Company Name</Label>
-                <Input id="company" defaultValue="Tech Innovations Inc." />
+                <Label htmlFor="company" className="text-slate-300">Company Name</Label>
+                <Input id="company" defaultValue="Tech Innovations Inc." className="bg-slate-800 border-slate-700 text-white" />
               </div>
 
               <div>
-                <Label htmlFor="bio">Bio</Label>
+                <Label htmlFor="bio" className="text-slate-300">Bio</Label>
                 <Textarea 
                   id="bio" 
                   placeholder="Tell us about yourself and your company..."
                   defaultValue="CEO of Tech Innovations Inc. Looking for talented freelancers to help build innovative solutions."
+                  className="bg-slate-800 border-slate-700 text-white"
                 />
               </div>
 
@@ -112,9 +113,9 @@ export default function ClientSettingsPage() {
           </Card>
 
           {/* Notification Settings */}
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center text-white">
                 <Bell className="w-5 h-5 mr-2" />
                 Notification Preferences
               </CardTitle>
@@ -122,8 +123,8 @@ export default function ClientSettingsPage() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium">Email Notifications</h4>
-                  <p className="text-sm text-slate-600">Receive updates about your projects via email</p>
+                  <h4 className="font-medium text-white">Email Notifications</h4>
+                  <p className="text-sm text-slate-400">Receive updates about your projects via email</p>
                 </div>
                 <Switch 
                   checked={notifications.email}
@@ -135,8 +136,8 @@ export default function ClientSettingsPage() {
               
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium">Push Notifications</h4>
-                  <p className="text-sm text-slate-600">Get instant notifications in your browser</p>
+                  <h4 className="font-medium text-white">Push Notifications</h4>
+                  <p className="text-sm text-slate-400">Get instant notifications in your browser</p>
                 </div>
                 <Switch 
                   checked={notifications.push}
@@ -148,8 +149,8 @@ export default function ClientSettingsPage() {
               
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium">SMS Notifications</h4>
-                  <p className="text-sm text-slate-600">Receive important updates via text message</p>
+                  <h4 className="font-medium text-white">SMS Notifications</h4>
+                  <p className="text-sm text-slate-400">Receive important updates via text message</p>
                 </div>
                 <Switch 
                   checked={notifications.sms}
@@ -161,8 +162,8 @@ export default function ClientSettingsPage() {
               
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium">Marketing Communications</h4>
-                  <p className="text-sm text-slate-600">Receive tips, news, and promotional content</p>
+                  <h4 className="font-medium text-white">Marketing Communications</h4>
+                  <p className="text-sm text-slate-400">Receive tips, news, and promotional content</p>
                 </div>
                 <Switch 
                   checked={notifications.marketing}
@@ -173,9 +174,9 @@ export default function ClientSettingsPage() {
           </Card>
 
           {/* Privacy Settings */}
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center text-white">
                 <Shield className="w-5 h-5 mr-2" />
                 Privacy & Security
               </CardTitle>
@@ -183,8 +184,8 @@ export default function ClientSettingsPage() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium">Public Profile</h4>
-                  <p className="text-sm text-slate-600">Make your profile visible to freelancers</p>
+                  <h4 className="font-medium text-white">Public Profile</h4>
+                  <p className="text-sm text-slate-400">Make your profile visible to freelancers</p>
                 </div>
                 <Switch 
                   checked={privacy.profileVisible}
@@ -196,8 +197,8 @@ export default function ClientSettingsPage() {
               
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium">Show Email Address</h4>
-                  <p className="text-sm text-slate-600">Display your email on your public profile</p>
+                  <h4 className="font-medium text-white">Show Email Address</h4>
+                  <p className="text-sm text-slate-400">Display your email on your public profile</p>
                 </div>
                 <Switch 
                   checked={privacy.showEmail}
@@ -209,8 +210,8 @@ export default function ClientSettingsPage() {
               
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium">Show Phone Number</h4>
-                  <p className="text-sm text-slate-600">Display your phone number on your public profile</p>
+                  <h4 className="font-medium text-white">Show Phone Number</h4>
+                  <p className="text-sm text-slate-400">Display your phone number on your public profile</p>
                 </div>
                 <Switch 
                   checked={privacy.showPhone}
@@ -221,10 +222,10 @@ export default function ClientSettingsPage() {
               <Separator />
               
               <div className="pt-4">
-                <Button variant="outline" className="mr-4">
+                <Button variant="outline" className="mr-4 border-slate-700 text-slate-300 hover:bg-slate-800">
                   Change Password
                 </Button>
-                <Button variant="outline">
+                <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800">
                   Two-Factor Authentication
                 </Button>
               </div>
@@ -232,31 +233,31 @@ export default function ClientSettingsPage() {
           </Card>
 
           {/* Payment Settings */}
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center text-white">
                 <CreditCard className="w-5 h-5 mr-2" />
                 Payment Methods
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="border rounded-lg p-4">
+                <div className="border border-slate-800 rounded-lg p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-6 bg-blue-600 rounded flex items-center justify-center text-white text-xs font-bold">
                         VISA
                       </div>
                       <div>
-                        <p className="font-medium">•••• •••• •••• 4242</p>
-                        <p className="text-sm text-slate-600">Expires 12/26</p>
+                        <p className="font-medium text-white">•••• •••• •••• 4242</p>
+                        <p className="text-sm text-slate-400">Expires 12/26</p>
                       </div>
                     </div>
-                    <Badge variant="secondary">Primary</Badge>
+                    <Badge variant="secondary" className="bg-slate-800 text-slate-300">Primary</Badge>
                   </div>
                 </div>
                 
-                <Button variant="outline">
+                <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800">
                   Add Payment Method
                 </Button>
               </div>
@@ -264,9 +265,9 @@ export default function ClientSettingsPage() {
           </Card>
 
           {/* Danger Zone */}
-          <Card className="border-red-200">
+          <Card className="border-red-800 bg-slate-900">
             <CardHeader>
-              <CardTitle className="flex items-center text-red-600">
+              <CardTitle className="flex items-center text-red-400">
                 <Trash2 className="w-5 h-5 mr-2" />
                 Danger Zone
               </CardTitle>
@@ -274,8 +275,8 @@ export default function ClientSettingsPage() {
             <CardContent>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-medium text-red-600">Delete Account</h4>
-                  <p className="text-sm text-slate-600 mb-4">
+                  <h4 className="font-medium text-red-400">Delete Account</h4>
+                  <p className="text-sm text-slate-400 mb-4">
                     Permanently delete your account and all associated data. This action cannot be undone.
                   </p>
                   <Button variant="destructive">

@@ -32,13 +32,13 @@ export default function ClientProjectsPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">My Projects</h1>
-            <p className="text-slate-600 mt-2">Manage and track your posted projects</p>
+            <h1 className="text-3xl font-bold text-white">My Projects</h1>
+            <p className="text-slate-400 mt-2">Manage and track your posted projects</p>
           </div>
           <Link href="/dashboard/client/projects/new">
             <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
@@ -67,12 +67,12 @@ export default function ClientProjectsPage() {
         {/* Projects Grid */}
         <div className="grid gap-6">
           {projects.map((project) => (
-            <Card key={project.id} className="hover:shadow-lg transition-shadow">
+            <Card key={project.id} className="hover:shadow-lg transition-shadow bg-slate-900 border-slate-800">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div>
                     <CardTitle className="text-xl mb-2">{project.title}</CardTitle>
-                    <p className="text-slate-600">{project.description}</p>
+                    <p className="text-slate-400">{project.description}</p>
                   </div>
                   <Badge variant={project.status === 'Active' ? 'default' : 'secondary'}>
                     {project.status}
@@ -82,15 +82,15 @@ export default function ClientProjectsPage() {
               <CardContent>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-4">
-                    <div className="flex items-center text-sm text-slate-600">
+                    <div className="flex items-center text-sm text-slate-400">
                       <DollarSign className="w-4 h-4 mr-1" />
                       ${project.budget.toLocaleString()}
                     </div>
-                    <div className="flex items-center text-sm text-slate-600">
+                    <div className="flex items-center text-sm text-slate-400">
                       <Users className="w-4 h-4 mr-1" />
                       {project.proposals} proposals
                     </div>
-                    <div className="flex items-center text-sm text-slate-600">
+                    <div className="flex items-center text-sm text-slate-400">
                       <Clock className="w-4 h-4 mr-1" />
                       Due {project.deadline}
                     </div>
@@ -100,13 +100,13 @@ export default function ClientProjectsPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex flex-wrap gap-2">
                     {project.skills.map((skill) => (
-                      <Badge key={skill} variant="outline" className="text-xs">
+                      <Badge key={skill} variant="outline" className="text-xs bg-slate-800 text-slate-300 border-slate-700">
                         {skill}
                       </Badge>
                     ))}
                   </div>
                   <div className="flex space-x-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="border-slate-700 text-slate-300 hover:bg-slate-800">
                       View Proposals
                     </Button>
                     <Button size="sm">
