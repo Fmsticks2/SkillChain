@@ -3,57 +3,32 @@
 import type React from "react"
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuth, type UserRole } from "@/lib/auth"
+import { useAuthContext } from "./auth-provider"
 import { Loader2 } from "lucide-react"
 
 interface ProtectedRouteProps {
   children: React.ReactNode
-  allowedRoles?: UserRole[]
+  allowedRoles?: string[]
   redirectTo?: string
 }
 
 export function ProtectedRoute({
   children,
   allowedRoles = ["freelancer", "client", "admin"],
-  redirectTo = "/auth/signin",
+  redirectTo = "/auth/signup",
 }: ProtectedRouteProps) {
-  const { user, isAuthenticated, isLoading, setLoading } = useAuth()
+  const { isWeb3AuthConnected, isWalletConnected, isLoading } = useAuthContext()
   const router = useRouter()
 
   useEffect(() => {
-    // Set loading to false after hydration
-    const timer = setTimeout(() => {
-      setLoading(false)
-    }, 100)
-
-    return () => clearTimeout(timer)
-  }, [setLoading])
-
-  useEffect(() => {
     if (!isLoading) {
-      if (!isAuthenticated) {
+      // Check if user is authenticated via Web3Auth or wallet connection
+      if (!isWeb3AuthConnected && !isWalletConnected) {
         router.push(redirectTo)
         return
       }
-
-      if (user && !allowedRoles.includes(user.role)) {
-        // Redirect based on user role
-        switch (user.role) {
-          case "freelancer":
-            router.push("/dashboard/freelancer")
-            break
-          case "client":
-            router.push("/dashboard/client")
-            break
-          case "admin":
-            router.push("/admin")
-            break
-          default:
-            router.push("/")
-        }
-      }
     }
-  }, [isAuthenticated, isLoading, user, allowedRoles, redirectTo, router])
+  }, [isWeb3AuthConnected, isWalletConnected, isLoading, redirectTo, router])
 
   if (isLoading) {
     return (
@@ -63,7 +38,7 @@ export function ProtectedRoute({
     )
   }
 
-  if (!isAuthenticated || (user && !allowedRoles.includes(user.role))) {
+  if (!isWeb3AuthConnected && !isWalletConnected) {
     return null
   }
 

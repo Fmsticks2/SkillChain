@@ -53,7 +53,14 @@ export function SignInPage() {
   useEffect(() => {
     // Redirect if already authenticated
     if (isWeb3AuthConnected || isWalletConnected) {
-      router.push('/dashboard')
+      // Check for stored user role from signup
+      const storedRole = localStorage.getItem('userRole')
+      if (storedRole && (storedRole === 'client' || storedRole === 'freelancer')) {
+        router.push(`/dashboard/${storedRole}`)
+      } else {
+        // Fallback to generic dashboard if no role is stored
+        router.push('/dashboard')
+      }
     }
   }, [isWeb3AuthConnected, isWalletConnected, router])
 
@@ -90,14 +97,14 @@ export function SignInPage() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-400" />
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
       <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 items-center">
         {/* Left side - Branding */}
         <motion.div
@@ -108,7 +115,7 @@ export function SignInPage() {
         >
           <div className="space-y-6">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
                 <Zap className="w-6 h-6 text-white" />
               </div>
               <h1 className="text-3xl font-bold text-white">SkillChain</h1>
@@ -117,7 +124,7 @@ export function SignInPage() {
             <div className="space-y-4">
               <h2 className="text-4xl font-bold text-white leading-tight">
                 Welcome back to the future of
-                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> freelancing</span>
+                <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"> freelancing</span>
               </h2>
               <p className="text-xl text-slate-300 leading-relaxed">
                 Connect with verified professionals using Web3Auth and secure wallet connections.
@@ -129,19 +136,19 @@ export function SignInPage() {
                 <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
                   <Shield className="w-4 h-4 text-green-400" />
                 </div>
-                <span className="text-slate-300">Web3Auth social login integration</span>
+                <span className="text-slate-300">Secure Web3Auth social authentication</span>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
                   <CheckCircle className="w-4 h-4 text-blue-400" />
                 </div>
-                <span className="text-slate-300">Secure wallet connections with Reown</span>
+                <span className="text-slate-300">Reown wallet integration</span>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-purple-400" />
+                <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                  <Zap className="w-4 h-4 text-blue-400" />
                 </div>
-                <span className="text-slate-300">Seamless blockchain authentication</span>
+                <span className="text-slate-300">Blockchain-verified reputation</span>
               </div>
             </div>
           </div>
@@ -156,14 +163,14 @@ export function SignInPage() {
         >
           <div className="lg:hidden mb-8 text-center">
             <div className="flex items-center justify-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
                 <Zap className="w-5 h-5 text-white" />
               </div>
               <h1 className="text-2xl font-bold text-white">SkillChain</h1>
             </div>
           </div>
 
-          <Card className="p-8 bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl">
+          <Card className="p-8 bg-slate-900/50 backdrop-blur-sm border-slate-800 hover:border-slate-700 transition-all duration-300">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-white mb-2">Welcome back</h2>
               <p className="text-slate-400">Choose your preferred sign-in method</p>
@@ -225,7 +232,7 @@ export function SignInPage() {
             </div>
 
             <div className="relative mb-6">
-              <Separator className="bg-white/10" />
+              <Separator className="bg-slate-700" />
               <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 px-3 text-sm text-slate-400">
                 or
               </span>
@@ -235,7 +242,7 @@ export function SignInPage() {
             <Button
               onClick={handleWalletSignIn}
               disabled={isLoading}
-              className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium transition-all duration-200 hover:scale-[1.02]"
+              className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-medium transition-all duration-200 hover:scale-[1.02]"
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -250,7 +257,7 @@ export function SignInPage() {
             <div className="mt-8 text-center">
               <p className="text-sm text-slate-400">
                 Don't have an account?{" "}
-                <Link href="/auth/signup" className="text-purple-400 hover:text-purple-300 font-medium">
+                <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300 font-medium">
                   Sign up
                 </Link>
               </p>

@@ -174,6 +174,9 @@ export function SignUpPage() {
       // This would typically involve an API call to save user profile
       await new Promise((resolve) => setTimeout(resolve, 1000))
       
+      // Store user role in localStorage for future signin redirects
+      localStorage.setItem('userRole', userType)
+      
       // Redirect to role-specific dashboard after profile completion
       router.push(`/dashboard/${userType}`)
     } catch (err) {
@@ -380,7 +383,12 @@ export function SignUpPage() {
                     <h4 className="text-lg font-semibold mb-4 text-white">I'm joining as a...</h4>
                     <RadioGroup
                       value={userType}
-                      onValueChange={(value) => setUserType(value as UserRole)}
+                      onValueChange={(value) => {
+                        const role = value as UserRole
+                        setUserType(role)
+                        // Store role immediately when selected
+                        localStorage.setItem('userRole', role)
+                      }}
                       className="space-y-3"
                     >
                       <div className="flex items-center space-x-3 p-4 border border-slate-700 rounded-lg hover:border-slate-600 transition-colors">
